@@ -1,0 +1,1069 @@
+# JHS Arena
+
+## Arquitetura Funcional do MVP — Versão 0.1
+
+## 1. Definição do produto
+
+O JHS Arena será uma plataforma de gestão para arenas esportivas, clubes, academias e centros que trabalham com locação de espaços, aulas, rankings, eventos e serviços.
+
+A MD Tennis será o cliente piloto do produto.
+
+A primeira versão deverá funcionar em:
+
+* Windows;
+* Linux;
+* navegador para funções administrativas e portal do cliente.
+
+A aplicação deverá possuir uma única base de dados centralizada.
+
+---
+
+# 2. Objetivo do MVP
+
+O MVP deverá substituir os principais controles manuais da MD Tennis, atualmente realizados por:
+
+* cadernos;
+* cadernetas;
+* WhatsApp;
+* telefone;
+* extratos bancários;
+* comprovantes;
+* LetzPlay.
+
+O foco inicial será:
+
+1. Centralizar as reservas;
+2. Organizar as agendas de quadras e professores;
+3. Melhorar a gestão dos confrontos do ranking;
+4. Controlar mensalidades e inadimplência;
+5. Registrar cancelamentos e alterações;
+6. Reduzir o volume de atendimento manual;
+7. Fornecer visão geral da operação.
+
+---
+
+# 3. Perfis de usuário
+
+## 3.1 Superadministrador JHS
+
+Usuário responsável pela plataforma completa.
+
+Permissões:
+
+* cadastrar empresas;
+* ativar ou bloquear empresas;
+* administrar planos;
+* visualizar uso da plataforma;
+* prestar suporte;
+* acessar logs técnicos;
+* configurar funcionalidades por empresa;
+* administrar assinaturas.
+
+Esse perfil pertence à JHS Digital Solutions.
+
+---
+
+## 3.2 Proprietário
+
+Na MD Tennis, esse perfil será utilizado por Michel.
+
+Permissões:
+
+* acesso completo à empresa;
+* visualizar dashboard;
+* cadastrar e editar usuários;
+* configurar valores;
+* visualizar receitas;
+* controlar mensalidades;
+* verificar inadimplência;
+* administrar ranking;
+* cadastrar espaços;
+* acompanhar reservas;
+* acessar relatórios;
+* visualizar auditoria;
+* autorizar cancelamentos especiais;
+* definir prazo de tolerância.
+
+---
+
+## 3.3 Administrador ou gerente
+
+Permissões semelhantes às do proprietário, podendo existir restrições financeiras.
+
+Poderá:
+
+* administrar agenda;
+* cadastrar clientes;
+* cadastrar professores;
+* controlar reservas;
+* administrar aulas;
+* administrar ranking;
+* acompanhar pagamentos;
+* visualizar relatórios permitidos.
+
+---
+
+## 3.4 Secretaria ou recepção
+
+Poderá:
+
+* cadastrar clientes;
+* consultar agenda;
+* criar reservas;
+* alterar reservas;
+* cancelar reservas;
+* cadastrar alunos;
+* registrar pagamentos;
+* organizar aulas;
+* registrar faltas;
+* organizar reposições;
+* registrar disponibilidade de jogadores;
+* acompanhar confirmações;
+* cadastrar encordoamentos em fases futuras.
+
+Não poderá:
+
+* excluir dados financeiros;
+* alterar configurações gerais;
+* visualizar informações restritas;
+* alterar permissões;
+* excluir histórico de auditoria.
+
+---
+
+## 3.5 Professor
+
+Poderá:
+
+* visualizar sua agenda;
+* visualizar seus alunos;
+* consultar aulas do dia;
+* registrar presença;
+* registrar falta;
+* solicitar reposição;
+* bloquear horário mediante autorização;
+* visualizar observações relacionadas aos alunos.
+
+Não poderá visualizar informações financeiras gerais da empresa.
+
+---
+
+## 3.6 Jogador ou aluno
+
+Terá acesso ao portal do cliente.
+
+Poderá:
+
+* consultar reservas;
+* consultar aulas;
+* informar disponibilidade;
+* confirmar confronto;
+* recusar confronto;
+* solicitar cancelamento;
+* solicitar reposição;
+* consultar mensalidades;
+* enviar comprovante;
+* acompanhar situação no ranking;
+* receber notificações.
+
+---
+
+## 3.7 Responsável pelo ranking
+
+Poderá:
+
+* cadastrar participantes;
+* administrar categorias;
+* visualizar disponibilidades;
+* visualizar confrontos;
+* criar ou aprovar sugestões;
+* registrar resultados;
+* acompanhar jogadores sem partidas;
+* visualizar inadimplência;
+* solicitar remoção do participante.
+
+---
+
+# 4. Módulos do MVP
+
+## 4.1 Autenticação e acesso
+
+Funções:
+
+* login;
+* logout;
+* recuperação de senha;
+* alteração de senha;
+* controle de sessão;
+* bloqueio de usuário;
+* perfis e permissões;
+* registro de último acesso.
+
+---
+
+## 4.2 Cadastro da empresa
+
+Dados:
+
+* razão social;
+* nome fantasia;
+* CNPJ;
+* telefone;
+* WhatsApp;
+* e-mail;
+* endereço;
+* logotipo;
+* horário de funcionamento;
+* moeda;
+* fuso horário;
+* status da empresa.
+
+---
+
+## 4.3 Cadastro de usuários
+
+Dados:
+
+* nome;
+* e-mail;
+* telefone;
+* perfil;
+* status;
+* senha temporária;
+* empresa;
+* unidade;
+* data de criação;
+* último acesso.
+
+---
+
+## 4.4 Cadastro de clientes
+
+Dados:
+
+* nome completo;
+* CPF;
+* data de nascimento;
+* telefone;
+* WhatsApp;
+* e-mail;
+* endereço;
+* contato de emergência;
+* observações;
+* status;
+* data de cadastro.
+
+O cliente poderá possuir mais de um vínculo:
+
+* aluno;
+* jogador;
+* locatário de quadra;
+* participante do day use;
+* cliente da loja;
+* cliente de encordoamento;
+* cliente do estúdio.
+
+---
+
+## 4.5 Cadastro de professores
+
+Dados:
+
+* nome;
+* telefone;
+* e-mail;
+* especialidade;
+* dias disponíveis;
+* horários disponíveis;
+* valor ou comissão;
+* status;
+* observações.
+
+---
+
+## 4.6 Cadastro de espaços
+
+O cadastro deverá ser genérico.
+
+Tipos iniciais:
+
+* quadra de tênis;
+* quadra de beach tennis;
+* estúdio;
+* espaço multiuso.
+
+Dados:
+
+* nome;
+* tipo;
+* descrição;
+* capacidade;
+* valor padrão;
+* duração mínima;
+* intervalo entre reservas;
+* horário de funcionamento;
+* status;
+* observações.
+
+Exemplos:
+
+* Quadra de Tênis 1;
+* Quadra de Tênis 2;
+* Quadra de Tênis 3;
+* Quadra de Beach Tennis;
+* Estúdio 1;
+* Estúdio 2.
+
+---
+
+# 5. Módulo de agenda
+
+## 5.1 Visualizações
+
+A agenda deverá possuir:
+
+* visão diária;
+* visão semanal;
+* visão mensal;
+* visão por espaço;
+* visão por professor;
+* visão geral.
+
+Na visão diária, recomenda-se:
+
+* horários nas linhas;
+* espaços nas colunas;
+* reservas exibidas em blocos;
+* identificação visual por tipo de atividade.
+
+---
+
+## 5.2 Tipos de compromisso
+
+A agenda deverá diferenciar:
+
+* locação avulsa;
+* aula individual;
+* aula em grupo;
+* confronto de ranking;
+* day use;
+* reserva de estúdio;
+* manutenção;
+* bloqueio;
+* evento interno.
+
+---
+
+## 5.3 Status de agenda
+
+* pré-reserva;
+* aguardando confirmação;
+* confirmada;
+* em andamento;
+* concluída;
+* cancelada;
+* não compareceu;
+* bloqueada.
+
+---
+
+# 6. Módulo de reservas
+
+## 6.1 Criação da reserva
+
+Ao criar uma reserva, deverão ser informados:
+
+* cliente;
+* espaço;
+* data;
+* horário inicial;
+* horário final;
+* tipo de reserva;
+* valor;
+* forma de pagamento;
+* status do pagamento;
+* observações;
+* funcionário responsável.
+
+---
+
+## 6.2 Regras de reserva
+
+### RN-RES-001
+
+O sistema não deverá permitir duas reservas no mesmo espaço, data e intervalo de horário.
+
+### RN-RES-002
+
+O sistema deverá verificar bloqueios e manutenções antes de confirmar uma reserva.
+
+### RN-RES-003
+
+O sistema deverá registrar o usuário que criou a reserva.
+
+### RN-RES-004
+
+Toda alteração deverá manter histórico.
+
+### RN-RES-005
+
+Todo cancelamento deverá registrar:
+
+* responsável;
+* data;
+* horário;
+* motivo;
+* observação.
+
+### RN-RES-006
+
+O valor da reserva deverá ser preenchido automaticamente com base na tabela vigente.
+
+### RN-RES-007
+
+O usuário autorizado poderá aplicar desconto, desde que informe o motivo.
+
+### RN-RES-008
+
+O sistema deverá permitir reserva recorrente.
+
+Exemplo:
+
+* todas as terças-feiras;
+* das 19h às 20h;
+* por três meses.
+
+### RN-RES-009
+
+Reservas recorrentes deverão ser verificadas individualmente para impedir conflitos.
+
+---
+
+# 7. Módulo de aulas
+
+## 7.1 Plano do aluno
+
+O aluno poderá possuir:
+
+* professor;
+* quadra;
+* dia fixo;
+* horário fixo;
+* duração;
+* quantidade de aulas por mês;
+* valor mensal;
+* dia de vencimento;
+* data de início;
+* status.
+
+---
+
+## 7.2 Status da aula
+
+* agendada;
+* realizada;
+* falta justificada;
+* falta não justificada;
+* cancelada pela empresa;
+* reposição pendente;
+* reposta.
+
+---
+
+## 7.3 Regras de aula
+
+### RN-AUL-001
+
+Uma aula deverá possuir aluno, professor, quadra, data e horário.
+
+### RN-AUL-002
+
+Professor, aluno e quadra não poderão possuir conflito de horário.
+
+### RN-AUL-003
+
+A falta justificada deverá registrar a data e o horário da comunicação.
+
+### RN-AUL-004
+
+A reposição dependerá de autorização conforme a política da empresa.
+
+### RN-AUL-005
+
+A reposição deverá estar ligada à aula original.
+
+### RN-AUL-006
+
+A reposição deverá respeitar a disponibilidade simultânea de aluno, professor e quadra.
+
+### RN-AUL-007
+
+O sistema deverá permitir configurar prazo máximo para uso da reposição.
+
+### RN-AUL-008
+
+A falta sem comunicação antecipada poderá ser marcada como aula consumida.
+
+---
+
+# 8. Módulo de ranking
+
+## 8.1 Categorias
+
+O sistema deverá permitir cadastrar:
+
+* nome da categoria;
+* nível;
+* sexo, quando aplicável;
+* faixa etária, quando aplicável;
+* quantidade de participantes;
+* status;
+* responsável.
+
+---
+
+## 8.2 Participantes
+
+Dados:
+
+* jogador;
+* categoria;
+* data de entrada;
+* posição;
+* status;
+* mensalidade;
+* vencimento;
+* último jogo;
+* quantidade de partidas;
+* quantidade de cancelamentos;
+* observações.
+
+---
+
+## 8.3 Disponibilidade
+
+O jogador poderá informar:
+
+* data;
+* dia da semana;
+* horário inicial;
+* horário final;
+* recorrência;
+* prazo de validade;
+* observações.
+
+Exemplo:
+
+```text
+Terça-feira
+18h às 22h
+Válido durante julho
+```
+
+---
+
+## 8.4 Status do confronto
+
+* sorteado;
+* aguardando disponibilidade;
+* horário sugerido;
+* aguardando jogador A;
+* aguardando jogador B;
+* confirmado;
+* cancelado;
+* remarcação pendente;
+* realizado;
+* resultado registrado.
+
+---
+
+## 8.5 Regras do confronto
+
+### RN-RNK-001
+
+Os confrontos poderão continuar sendo sorteados pelo LetzPlay no MVP.
+
+### RN-RNK-002
+
+O JHS Arena será responsável inicialmente por organizar:
+
+* disponibilidade;
+* sugestão de horário;
+* reserva da quadra;
+* confirmação;
+* cancelamento;
+* remarcação;
+* comunicação.
+
+### RN-RNK-003
+
+O sistema deverá cruzar:
+
+* disponibilidade do jogador A;
+* disponibilidade do jogador B;
+* disponibilidade das quadras.
+
+### RN-RNK-004
+
+A partida somente será confirmada após confirmação dos dois jogadores.
+
+### RN-RNK-005
+
+Após as duas confirmações, o horário deverá ser bloqueado na agenda.
+
+### RN-RNK-006
+
+Caso um jogador cancele, o outro deverá ser comunicado imediatamente.
+
+### RN-RNK-007
+
+O cancelamento deverá informar quem cancelou e o motivo.
+
+### RN-RNK-008
+
+O sistema deverá destacar jogadores que estão há mais tempo sem jogar.
+
+### RN-RNK-009
+
+O sistema deverá destacar confrontos pendentes há muitos dias.
+
+### RN-RNK-010
+
+A primeira versão deverá sugerir horários, sem marcar automaticamente.
+
+---
+
+# 9. Mensalidade do ranking
+
+## 9.1 Configuração atual da MD Tennis
+
+* valor: R$ 150,00;
+* frequência: mensal;
+* vencimento: individual;
+* responsável pela conferência: Michel;
+* conferência atual: extrato bancário e comprovantes;
+* inadimplente possui prazo de tolerância;
+* após o prazo, poderá ser removido do LetzPlay e do ranking.
+
+---
+
+## 9.2 Status da mensalidade
+
+* futura;
+* pendente;
+* vencendo hoje;
+* vencida;
+* em tolerância;
+* prazo final;
+* paga;
+* cancelada;
+* isenta;
+* bloqueada.
+
+---
+
+## 9.3 Regras financeiras do ranking
+
+### RN-FIN-001
+
+Cada jogador poderá possuir um dia de vencimento diferente.
+
+### RN-FIN-002
+
+O sistema deverá gerar uma cobrança mensal para cada participante ativo.
+
+### RN-FIN-003
+
+O valor padrão inicial será R$ 150,00, podendo ser alterado pelo proprietário.
+
+### RN-FIN-004
+
+O pagamento poderá ser registrado como:
+
+* PIX;
+* dinheiro;
+* cartão de crédito;
+* cartão de débito;
+* transferência;
+* outro.
+
+### RN-FIN-005
+
+O sistema deverá permitir anexar ou registrar referência de comprovante.
+
+### RN-FIN-006
+
+O sistema deverá possuir prazo de tolerância configurável.
+
+### RN-FIN-007
+
+Durante a tolerância, o jogador continuará ativo, mas deverá aparecer como pendente.
+
+### RN-FIN-008
+
+Após o prazo de tolerância, o sistema deverá marcar o jogador como passível de suspensão.
+
+### RN-FIN-009
+
+A exclusão do LetzPlay não será automática no MVP.
+
+O sistema deverá apresentar:
+
+```text
+Prazo de pagamento expirado.
+Ação recomendada: suspender participante.
+```
+
+### RN-FIN-010
+
+A suspensão deverá ser confirmada por usuário autorizado.
+
+### RN-FIN-011
+
+O sistema deverá manter histórico de suspensão e reativação.
+
+---
+
+# 10. Pagamentos básicos
+
+O MVP deverá controlar pagamentos relacionados a:
+
+* locação de quadra;
+* mensalidade de aula;
+* mensalidade do ranking;
+* reserva de estúdio;
+* day use futuramente.
+
+Dados:
+
+* cliente;
+* serviço;
+* competência;
+* vencimento;
+* valor;
+* desconto;
+* acréscimo;
+* total;
+* forma de pagamento;
+* data de pagamento;
+* status;
+* responsável;
+* observações.
+
+---
+
+# 11. Dashboard
+
+## 11.1 Dashboard do proprietário
+
+Deverá exibir:
+
+* reservas de hoje;
+* aulas de hoje;
+* confrontos de hoje;
+* espaços disponíveis;
+* mensalidades vencendo;
+* mensalidades vencidas;
+* jogadores em tolerância;
+* cancelamentos;
+* receita registrada;
+* taxa de ocupação;
+* pendências operacionais.
+
+Exemplo:
+
+```text
+Hoje
+
+18 reservas
+12 aulas
+4 confrontos
+3 cancelamentos
+5 mensalidades vencidas
+2 jogadores com prazo final
+```
+
+---
+
+## 11.2 Alertas
+
+O sistema deverá gerar alertas como:
+
+* reserva sem confirmação;
+* mensalidade vencida;
+* confronto sem horário;
+* jogador há muitos dias sem jogar;
+* aula aguardando reposição;
+* quadra bloqueada;
+* cancelamento recente;
+* comprovante aguardando conferência.
+
+---
+
+# 12. Notificações do MVP
+
+Inicialmente, o sistema deverá gerar mensagens prontas para envio.
+
+Exemplos:
+
+## Confirmação de reserva
+
+```text
+Olá, João.
+
+Sua reserva foi confirmada:
+
+Quadra: Quadra 2
+Data: 15/07/2026
+Horário: 19h às 20h
+```
+
+## Sugestão de confronto
+
+```text
+Olá, Joabe.
+
+Encontramos um horário compatível para seu confronto:
+
+Adversário: Carlos
+Data: 16/07/2026
+Horário: 20h
+Quadra: Quadra 1
+
+Confirme sua disponibilidade.
+```
+
+## Cancelamento
+
+```text
+Olá, Carlos.
+
+Seu confronto marcado para 16/07/2026 às 20h foi cancelado.
+
+Em breve será sugerido um novo horário.
+```
+
+## Mensalidade
+
+```text
+Olá, João.
+
+Sua mensalidade do ranking no valor de R$ 150,00 vence em 18/07/2026.
+```
+
+A integração automática com WhatsApp deverá ser estudada posteriormente.
+
+---
+
+# 13. Auditoria
+
+O sistema deverá registrar ações importantes.
+
+Dados do log:
+
+* usuário;
+* empresa;
+* ação;
+* módulo;
+* registro afetado;
+* data;
+* horário;
+* valor anterior;
+* valor novo;
+* endereço ou dispositivo, quando aplicável.
+
+Ações auditáveis:
+
+* criação de reserva;
+* alteração de reserva;
+* cancelamento;
+* registro de pagamento;
+* exclusão;
+* alteração de preço;
+* suspensão de jogador;
+* reativação;
+* alteração de permissões.
+
+---
+
+# 14. Telas do MVP
+
+## Administração
+
+1. Login;
+2. Recuperar senha;
+3. Dashboard;
+4. Agenda geral;
+5. Agenda por espaço;
+6. Agenda por professor;
+7. Nova reserva;
+8. Editar reserva;
+9. Cancelar reserva;
+10. Cadastro de clientes;
+11. Cadastro de professores;
+12. Cadastro de usuários;
+13. Cadastro de espaços;
+14. Cadastro de serviços;
+15. Cadastro de preços;
+16. Planos de alunos;
+17. Controle de aulas;
+18. Faltas e reposições;
+19. Categorias do ranking;
+20. Participantes;
+21. Disponibilidades;
+22. Confrontos;
+23. Mensalidades;
+24. Pagamentos;
+25. Alertas;
+26. Relatórios básicos;
+27. Configurações;
+28. Auditoria.
+
+## Portal do jogador
+
+1. Login;
+2. Minha agenda;
+3. Meus confrontos;
+4. Informar disponibilidade;
+5. Confirmar confronto;
+6. Solicitar cancelamento;
+7. Minhas mensalidades;
+8. Enviar comprovante;
+9. Minhas notificações;
+10. Meus dados.
+
+## Portal do professor
+
+1. Login;
+2. Agenda do dia;
+3. Meus alunos;
+4. Registrar presença;
+5. Registrar falta;
+6. Solicitar reposição;
+7. Consultar horários.
+
+---
+
+# 15. Fluxo principal de reserva
+
+```text
+Cliente entra em contato
+        ↓
+Funcionário consulta agenda
+        ↓
+Seleciona espaço disponível
+        ↓
+Informa cliente e horário
+        ↓
+Sistema calcula valor
+        ↓
+Reserva é criada
+        ↓
+Cliente recebe confirmação
+        ↓
+Pagamento é registrado
+        ↓
+Reserva é concluída
+```
+
+---
+
+# 16. Fluxo principal de confronto
+
+```text
+Confronto é sorteado no LetzPlay
+        ↓
+Responsável registra os jogadores
+        ↓
+Jogadores informam disponibilidade
+        ↓
+Sistema cruza os horários
+        ↓
+Sistema verifica quadras
+        ↓
+Horário é sugerido
+        ↓
+Jogador A confirma
+        ↓
+Jogador B confirma
+        ↓
+Quadra é reservada
+        ↓
+Ambos recebem confirmação
+        ↓
+Partida é realizada
+        ↓
+Resultado é registrado
+```
+
+---
+
+# 17. Fluxo de inadimplência
+
+```text
+Mensalidade é gerada
+        ↓
+Sistema aguarda pagamento
+        ↓
+Vencimento é atingido
+        ↓
+Jogador entra em tolerância
+        ↓
+Sistema envia alerta
+        ↓
+Prazo de tolerância termina
+        ↓
+Jogador é marcado para suspensão
+        ↓
+Michel confirma a suspensão
+        ↓
+Participante fica inativo no JHS Arena
+        ↓
+Remoção manual no LetzPlay
+```
+
+---
+
+# 18. Fora do escopo inicial
+
+Não deverão entrar na primeira entrega:
+
+* estoque completo;
+* frente de caixa avançada;
+* emissão fiscal;
+* integração bancária automática;
+* integração oficial com WhatsApp;
+* integração automática com LetzPlay;
+* aplicativo mobile nativo;
+* ranking próprio;
+* inteligência artificial avançada;
+* sincronização offline completa;
+* encordoamento completo;
+* day use completo;
+* relatórios contábeis;
+* DRE;
+* integração com catracas;
+* loja virtual.
+
+Esses recursos serão planejados após a validação do núcleo principal.
+
+---
+
+# 19. Critérios de aceite do MVP
+
+O MVP será considerado funcional quando:
+
+1. Uma reserva puder ser criada sem usar o caderno;
+2. O sistema impedir reservas duplicadas;
+3. A secretaria conseguir consultar todos os espaços;
+4. Os professores conseguirem consultar suas agendas;
+5. As aulas fixas puderem ser registradas;
+6. Faltas e reposições puderem ser controladas;
+7. Jogadores puderem informar disponibilidade;
+8. Horários de confrontos puderem ser sugeridos;
+9. Cancelamentos forem registrados e comunicados;
+10. Mensalidades do ranking forem geradas mensalmente;
+11. O sistema identificar inadimplentes;
+12. Michel puder visualizar a situação geral no dashboard;
+13. Todas as ações importantes ficarem registradas;
+14. O sistema funcionar no Windows e no Linux.

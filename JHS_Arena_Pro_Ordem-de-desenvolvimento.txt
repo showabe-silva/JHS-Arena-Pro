@@ -1,0 +1,32 @@
+1. Base multiempresa e login
+2. Usuários e permissões
+3. Clientes, professores e espaços
+4. Agenda
+5. Reservas
+6. Aulas e reposições
+7. Ranking e disponibilidade
+8. Confrontos
+9. Mensalidades e pagamentos
+10. Dashboard e alertas
+11. Portal do jogador
+12. Testes com a MD Tennis
+
+
+==================================================
+
+Primeira versão pratica 
+
+1. Criação da solução C#
+2. Configuração da arquitetura
+3. Configuração do PostgreSQL
+4. Cadastro de empresa
+5. Login
+6. Usuários e permissões
+7. Clientes
+8. Espaços
+9. Agenda
+10. Reservas
+
+=================================================
+
+

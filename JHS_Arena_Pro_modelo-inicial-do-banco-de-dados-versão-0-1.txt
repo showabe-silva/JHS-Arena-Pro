@@ -1,0 +1,1980 @@
+# JHS Arena
+
+## Modelo Inicial do Banco de Dados — Versão 0.1
+
+## 1. Objetivo
+
+Definir a estrutura inicial do banco de dados do JHS Arena, contemplando:
+
+* empresas;
+* unidades;
+* usuários;
+* permissões;
+* clientes;
+* professores;
+* espaços;
+* reservas;
+* aulas;
+* ranking;
+* confrontos;
+* mensalidades;
+* pagamentos;
+* notificações;
+* auditoria.
+
+O banco deverá ser preparado para atender várias empresas utilizando a mesma plataforma.
+
+---
+
+# 2. Tecnologia recomendada
+
+Banco de dados:
+
+**PostgreSQL**
+
+Motivos:
+
+* gratuito e de código aberto;
+* compatível com Windows e Linux;
+* confiável para sistemas comerciais;
+* excelente suporte a integridade de dados;
+* bom desempenho;
+* compatível com Entity Framework Core;
+* preparado para crescimento do SaaS.
+
+---
+
+# 3. Padrões gerais
+
+## 3.1 Identificadores
+
+As tabelas principais utilizarão identificadores UUID.
+
+Exemplo:
+
+```text
+id = 978dc1af-d635-42f9-b8cc-7b5ef4f38019
+```
+
+Esse padrão evita conflitos entre registros criados em diferentes empresas, servidores ou dispositivos.
+
+---
+
+## 3.2 Multiempresa
+
+As tabelas pertencentes a uma empresa deverão possuir:
+
+```text
+empresa_id
+```
+
+Nenhum usuário comum poderá consultar registros de outra empresa.
+
+Exemplo:
+
+```text
+MD Tennis
+empresa_id = A
+
+Outra arena
+empresa_id = B
+```
+
+Uma reserva da empresa A nunca poderá aparecer para usuários da empresa B.
+
+---
+
+## 3.3 Campos de controle
+
+As tabelas principais deverão possuir:
+
+```text
+criado_em
+criado_por
+atualizado_em
+atualizado_por
+ativo
+```
+
+Quando aplicável, também deverão possuir:
+
+```text
+excluido_em
+excluido_por
+```
+
+A exclusão deverá ser preferencialmente lógica, mantendo o histórico.
+
+---
+
+## 3.4 Valores financeiros
+
+Valores monetários deverão utilizar:
+
+```text
+NUMERIC(12,2)
+```
+
+Exemplos:
+
+```text
+150.00
+80.00
+1250.90
+```
+
+Não deverá ser utilizado ponto flutuante para dinheiro.
+
+---
+
+## 3.5 Datas e horários
+
+Datas e horários deverão ser armazenados considerando fuso horário.
+
+Padrão recomendado:
+
+```text
+TIMESTAMP WITH TIME ZONE
+```
+
+Cada empresa terá um fuso horário configurado.
+
+Para a MD Tennis:
+
+```text
+America/Sao_Paulo
+```
+
+---
+
+# 4. Visão geral das entidades
+
+```text
+EMPRESA
+   │
+   ├── UNIDADES
+   ├── USUÁRIOS
+   ├── CLIENTES
+   ├── PROFESSORES
+   ├── ESPAÇOS
+   ├── SERVIÇOS
+   ├── RESERVAS
+   ├── AULAS
+   ├── CATEGORIAS DO RANKING
+   ├── PARTICIPANTES
+   ├── CONFRONTOS
+   ├── MENSALIDADES
+   ├── PAGAMENTOS
+   ├── NOTIFICAÇÕES
+   └── AUDITORIA
+```
+
+---
+
+# 5. Tabela `empresas`
+
+Representa cada empresa cliente do JHS Arena.
+
+## Campos
+
+```text
+id
+razao_social
+nome_fantasia
+cnpj
+telefone
+whatsapp
+email
+logradouro
+numero
+complemento
+bairro
+cidade
+estado
+cep
+logo_url
+fuso_horario
+moeda
+status
+plano_id
+data_inicio
+criado_em
+atualizado_em
+```
+
+## Status possíveis
+
+```text
+ATIVA
+INATIVA
+SUSPENSA
+TESTE
+CANCELADA
+```
+
+## Regras
+
+* CNPJ deverá ser único quando informado.
+* Uma empresa suspensa não poderá utilizar os módulos operacionais.
+* O superadministrador poderá ativar ou suspender a empresa.
+
+---
+
+# 6. Tabela `unidades`
+
+Permite que uma empresa possua mais de um endereço ou filial.
+
+## Campos
+
+```text
+id
+empresa_id
+nome
+telefone
+whatsapp
+email
+logradouro
+numero
+complemento
+bairro
+cidade
+estado
+cep
+fuso_horario
+ativo
+criado_em
+atualizado_em
+```
+
+## Exemplo
+
+```text
+Empresa: MD Tennis
+Unidade: Unidade Principal
+```
+
+No futuro:
+
+```text
+MD Tennis — Centro
+MD Tennis — Atibaia Norte
+```
+
+---
+
+# 7. Tabela `planos_saas`
+
+Representa os planos comerciais oferecidos pela JHS Digital Solutions.
+
+## Campos
+
+```text
+id
+nome
+descricao
+valor_mensal
+limite_usuarios
+limite_unidades
+limite_espacos
+ativo
+criado_em
+atualizado_em
+```
+
+## Exemplos
+
+```text
+Plano Essencial
+Plano Profissional
+Plano Arena
+Plano Rede
+```
+
+---
+
+# 8. Tabela `usuarios`
+
+Representa os usuários que acessam o sistema.
+
+## Campos
+
+```text
+id
+empresa_id
+unidade_id
+nome
+email
+telefone
+senha_hash
+status
+ultimo_acesso
+tentativas_login
+bloqueado_ate
+senha_temporaria
+criado_em
+criado_por
+atualizado_em
+atualizado_por
+```
+
+## Status
+
+```text
+ATIVO
+INATIVO
+BLOQUEADO
+PENDENTE
+```
+
+## Regras
+
+* O e-mail deverá ser único dentro da empresa.
+* Senhas nunca deverão ser armazenadas em texto simples.
+* Usuários inativos não poderão acessar o sistema.
+* O superadministrador JHS poderá não possuir `empresa_id`.
+
+---
+
+# 9. Tabela `perfis`
+
+Representa os papéis do sistema.
+
+## Campos
+
+```text
+id
+empresa_id
+nome
+descricao
+tipo_sistema
+ativo
+```
+
+## Perfis iniciais
+
+```text
+SUPER_ADMIN
+PROPRIETARIO
+ADMINISTRADOR
+RECEPCAO
+PROFESSOR
+RESPONSAVEL_RANKING
+JOGADOR
+ALUNO
+```
+
+---
+
+# 10. Tabela `permissoes`
+
+Representa ações autorizadas.
+
+## Campos
+
+```text
+id
+codigo
+nome
+modulo
+descricao
+```
+
+## Exemplos de códigos
+
+```text
+RESERVA_CRIAR
+RESERVA_EDITAR
+RESERVA_CANCELAR
+PAGAMENTO_REGISTRAR
+PAGAMENTO_ESTORNAR
+RANKING_SUSPENDER
+USUARIO_GERENCIAR
+AUDITORIA_VISUALIZAR
+```
+
+---
+
+# 11. Tabela `usuarios_perfis`
+
+Relaciona usuários e perfis.
+
+## Campos
+
+```text
+usuario_id
+perfil_id
+```
+
+Um usuário poderá possuir mais de um perfil.
+
+Exemplo:
+
+```text
+Michel
+- PROPRIETARIO
+- RESPONSAVEL_RANKING
+```
+
+---
+
+# 12. Tabela `perfis_permissoes`
+
+Relaciona perfis e permissões.
+
+## Campos
+
+```text
+perfil_id
+permissao_id
+```
+
+Esse relacionamento permitirá configurar permissões sem alterar o código do sistema.
+
+---
+
+# 13. Tabela `clientes`
+
+Representa clientes, alunos, jogadores e contratantes.
+
+## Campos
+
+```text
+id
+empresa_id
+nome_completo
+cpf
+data_nascimento
+telefone
+whatsapp
+email
+logradouro
+numero
+complemento
+bairro
+cidade
+estado
+cep
+contato_emergencia_nome
+contato_emergencia_telefone
+observacoes
+status
+criado_em
+criado_por
+atualizado_em
+atualizado_por
+```
+
+## Status
+
+```text
+ATIVO
+INATIVO
+BLOQUEADO
+```
+
+## Regras
+
+* CPF deverá ser único dentro da empresa quando informado.
+* Um cliente poderá exercer vários papéis.
+* O cliente não deverá ser duplicado para cada serviço utilizado.
+
+---
+
+# 14. Tabela `clientes_vinculos`
+
+Define os vínculos que um cliente possui.
+
+## Campos
+
+```text
+id
+empresa_id
+cliente_id
+tipo_vinculo
+data_inicio
+data_fim
+ativo
+```
+
+## Tipos de vínculo
+
+```text
+ALUNO
+JOGADOR
+LOCATARIO
+DAY_USE
+ESTUDIO
+LOJA
+ENCORDOAMENTO
+```
+
+---
+
+# 15. Tabela `professores`
+
+Representa os profissionais que ministram aulas.
+
+## Campos
+
+```text
+id
+empresa_id
+usuario_id
+nome
+telefone
+email
+especialidade
+tipo_remuneracao
+valor_aula
+percentual_comissao
+observacoes
+status
+criado_em
+atualizado_em
+```
+
+## Tipos de remuneração
+
+```text
+VALOR_FIXO
+POR_AULA
+COMISSAO
+MISTO
+```
+
+## Regras
+
+* Um professor poderá possuir usuário de acesso.
+* Nem todo professor será obrigado a acessar o sistema.
+* O professor poderá atuar em mais de uma unidade.
+
+---
+
+# 16. Tabela `professores_disponibilidades`
+
+Registra os horários normalmente disponíveis do professor.
+
+## Campos
+
+```text
+id
+empresa_id
+professor_id
+dia_semana
+horario_inicio
+horario_fim
+data_inicio_validade
+data_fim_validade
+ativo
+```
+
+## Exemplo
+
+```text
+Professor Carlos
+Segunda-feira
+08:00 às 12:00
+```
+
+---
+
+# 17. Tabela `espacos`
+
+Representa qualquer espaço reservável.
+
+## Campos
+
+```text
+id
+empresa_id
+unidade_id
+nome
+tipo_espaco
+descricao
+capacidade
+valor_padrao
+duracao_minima_minutos
+intervalo_reservas_minutos
+horario_abertura
+horario_fechamento
+status
+observacoes
+criado_em
+atualizado_em
+```
+
+## Tipos iniciais
+
+```text
+QUADRA_TENIS
+QUADRA_BEACH_TENNIS
+ESTUDIO
+ESPACO_MULTIUSO
+```
+
+## Status
+
+```text
+DISPONIVEL
+INDISPONIVEL
+MANUTENCAO
+INATIVO
+```
+
+---
+
+# 18. Tabela `espacos_horarios`
+
+Permite configurar funcionamento diferente por dia.
+
+## Campos
+
+```text
+id
+empresa_id
+espaco_id
+dia_semana
+horario_abertura
+horario_fechamento
+fechado
+```
+
+Exemplo:
+
+```text
+Quadra 1
+Domingo
+08:00 às 18:00
+```
+
+---
+
+# 19. Tabela `servicos`
+
+Representa os serviços comercializados.
+
+## Campos
+
+```text
+id
+empresa_id
+nome
+categoria
+descricao
+duracao_minutos
+valor_padrao
+permite_recorrencia
+exige_espaco
+exige_professor
+ativo
+criado_em
+atualizado_em
+```
+
+## Categorias
+
+```text
+LOCACAO_QUADRA
+AULA
+RANKING
+ESTUDIO
+DAY_USE
+ENCORDOAMENTO
+VENDA
+OUTRO
+```
+
+---
+
+# 20. Tabela `precos_servicos`
+
+Mantém histórico de preços.
+
+## Campos
+
+```text
+id
+empresa_id
+servico_id
+valor
+vigencia_inicio
+vigencia_fim
+dia_semana
+horario_inicio
+horario_fim
+ativo
+```
+
+Embora a MD Tennis não utilize preços diferentes por horário, a plataforma ficará preparada para isso.
+
+---
+
+# 21. Tabela `reservas`
+
+Representa qualquer compromisso que bloqueie um espaço.
+
+## Campos
+
+```text
+id
+empresa_id
+unidade_id
+cliente_id
+espaco_id
+servico_id
+professor_id
+tipo_reserva
+data_hora_inicio
+data_hora_fim
+status
+valor_original
+desconto
+acrescimo
+valor_total
+status_pagamento
+observacoes
+recorrencia_id
+criado_em
+criado_por
+atualizado_em
+atualizado_por
+cancelado_em
+cancelado_por
+motivo_cancelamento
+```
+
+## Tipos de reserva
+
+```text
+LOCACAO_AVULSA
+AULA
+RANKING
+ESTUDIO
+DAY_USE
+MANUTENCAO
+BLOQUEIO
+EVENTO
+```
+
+## Status
+
+```text
+PRE_RESERVA
+AGUARDANDO_CONFIRMACAO
+CONFIRMADA
+EM_ANDAMENTO
+CONCLUIDA
+CANCELADA
+NAO_COMPARECEU
+BLOQUEADA
+```
+
+## Regras
+
+* Uma reserva deverá ter horário inicial menor que o horário final.
+* Não poderá existir conflito no mesmo espaço.
+* Reservas canceladas não deverão bloquear o espaço.
+* Alterações deverão ser auditadas.
+* Uma aula poderá gerar automaticamente uma reserva.
+
+---
+
+# 22. Proteção contra conflito de reservas
+
+O banco deverá impedir sobreposição de horários.
+
+Exemplo proibido:
+
+```text
+Quadra 1
+19:00 às 20:00
+
+Quadra 1
+19:30 às 20:30
+```
+
+A validação deverá ocorrer:
+
+1. Na aplicação;
+2. Na API;
+3. No banco de dados.
+
+Essa proteção em três níveis reduz o risco de reservas duplicadas.
+
+---
+
+# 23. Tabela `recorrencias`
+
+Representa reservas ou aulas repetidas.
+
+## Campos
+
+```text
+id
+empresa_id
+tipo_recorrencia
+data_inicio
+data_fim
+intervalo
+dias_semana
+quantidade_ocorrencias
+status
+criado_em
+criado_por
+```
+
+## Tipos
+
+```text
+DIARIA
+SEMANAL
+QUINZENAL
+MENSAL
+PERSONALIZADA
+```
+
+---
+
+# 24. Tabela `historico_reservas`
+
+Registra alterações realizadas em uma reserva.
+
+## Campos
+
+```text
+id
+empresa_id
+reserva_id
+acao
+dados_anteriores
+dados_novos
+motivo
+usuario_id
+criado_em
+```
+
+## Ações
+
+```text
+CRIACAO
+ALTERACAO
+CANCELAMENTO
+CONFIRMACAO
+REAGENDAMENTO
+CONCLUSAO
+```
+
+Os campos `dados_anteriores` e `dados_novos` poderão utilizar formato JSON.
+
+---
+
+# 25. Tabela `planos_alunos`
+
+Representa o plano mensal de aula do aluno.
+
+## Campos
+
+```text
+id
+empresa_id
+cliente_id
+professor_id
+servico_id
+dia_semana
+horario_inicio
+horario_fim
+quantidade_aulas_mes
+valor_mensal
+dia_vencimento
+data_inicio
+data_fim
+status
+observacoes
+criado_em
+atualizado_em
+```
+
+## Status
+
+```text
+ATIVO
+SUSPENSO
+ENCERRADO
+CANCELADO
+```
+
+---
+
+# 26. Tabela `aulas`
+
+Representa cada aula individual.
+
+## Campos
+
+```text
+id
+empresa_id
+plano_aluno_id
+reserva_id
+cliente_id
+professor_id
+espaco_id
+data_hora_inicio
+data_hora_fim
+status
+presenca
+observacoes
+aula_origem_id
+criado_em
+atualizado_em
+```
+
+## Status
+
+```text
+AGENDADA
+REALIZADA
+FALTA_JUSTIFICADA
+FALTA_NAO_JUSTIFICADA
+CANCELADA_EMPRESA
+REPOSICAO_PENDENTE
+REPOSTA
+```
+
+---
+
+# 27. Tabela `faltas_aulas`
+
+Registra os detalhes da ausência.
+
+## Campos
+
+```text
+id
+empresa_id
+aula_id
+tipo_falta
+motivo
+comunicado_em
+comunicado_por
+aprovada_reposicao
+aprovada_por
+prazo_reposicao
+observacoes
+criado_em
+```
+
+## Tipos
+
+```text
+JUSTIFICADA
+NAO_JUSTIFICADA
+CANCELADA_EMPRESA
+```
+
+---
+
+# 28. Tabela `reposicoes_aulas`
+
+Controla a reposição.
+
+## Campos
+
+```text
+id
+empresa_id
+aula_origem_id
+aula_reposicao_id
+status
+prazo_limite
+solicitada_em
+aprovada_em
+aprovada_por
+realizada_em
+observacoes
+```
+
+## Status
+
+```text
+SOLICITADA
+APROVADA
+AGENDADA
+REALIZADA
+EXPIRADA
+NEGADA
+CANCELADA
+```
+
+---
+
+# 29. Tabela `categorias_ranking`
+
+Representa as categorias de competição.
+
+## Campos
+
+```text
+id
+empresa_id
+nome
+nivel
+genero
+idade_minima
+idade_maxima
+responsavel_usuario_id
+status
+criado_em
+atualizado_em
+```
+
+## Status
+
+```text
+ATIVA
+INATIVA
+ENCERRADA
+```
+
+---
+
+# 30. Tabela `participantes_ranking`
+
+Relaciona o jogador a uma categoria.
+
+## Campos
+
+```text
+id
+empresa_id
+categoria_id
+cliente_id
+posicao_atual
+data_entrada
+ultimo_jogo_em
+quantidade_partidas
+quantidade_cancelamentos
+dia_vencimento
+valor_mensalidade
+status
+suspenso_em
+suspenso_por
+motivo_suspensao
+criado_em
+atualizado_em
+```
+
+## Status
+
+```text
+ATIVO
+EM_TOLERANCIA
+PENDENTE_SUSPENSAO
+SUSPENSO
+INATIVO
+```
+
+## Regras
+
+* Um cliente não poderá aparecer duas vezes na mesma categoria ativa.
+* O valor padrão inicial será R$ 150,00.
+* O dia de vencimento será individual.
+* Suspensões deverão manter histórico.
+
+---
+
+# 31. Tabela `disponibilidades_jogadores`
+
+Registra quando o jogador pode disputar partidas.
+
+## Campos
+
+```text
+id
+empresa_id
+participante_ranking_id
+tipo_disponibilidade
+data_especifica
+dia_semana
+horario_inicio
+horario_fim
+vigencia_inicio
+vigencia_fim
+recorrente
+observacoes
+status
+criado_em
+atualizado_em
+```
+
+## Tipos
+
+```text
+RECORRENTE
+DATA_ESPECIFICA
+INDISPONIBILIDADE
+```
+
+## Exemplo
+
+```text
+Joabe
+Terça-feira
+19:00 às 22:00
+Recorrente durante julho
+```
+
+---
+
+# 32. Tabela `confrontos_ranking`
+
+Representa um confronto entre dois participantes.
+
+## Campos
+
+```text
+id
+empresa_id
+categoria_id
+jogador_a_id
+jogador_b_id
+origem_confronto
+referencia_letzplay
+data_sorteio
+data_limite
+status
+reserva_id
+placar
+vencedor_id
+observacoes
+criado_em
+atualizado_em
+```
+
+## Origem
+
+```text
+LETZPLAY
+MANUAL
+SISTEMA
+```
+
+## Status
+
+```text
+SORTEADO
+AGUARDANDO_DISPONIBILIDADE
+HORARIO_SUGERIDO
+AGUARDANDO_JOGADOR_A
+AGUARDANDO_JOGADOR_B
+CONFIRMADO
+CANCELADO
+REMARCACAO_PENDENTE
+REALIZADO
+RESULTADO_REGISTRADO
+```
+
+## Regras
+
+* Os dois jogadores deverão pertencer à mesma categoria.
+* Um jogador não poderá enfrentar a si mesmo.
+* A reserva só será confirmada após aceite dos dois jogadores.
+* O confronto deverá estar ligado a uma reserva após confirmação.
+
+---
+
+# 33. Tabela `sugestoes_confrontos`
+
+Registra os horários sugeridos.
+
+## Campos
+
+```text
+id
+empresa_id
+confronto_id
+espaco_id
+data_hora_inicio
+data_hora_fim
+pontuacao_compatibilidade
+status
+gerada_em
+expira_em
+criado_por
+```
+
+## Status
+
+```text
+PENDENTE
+ACEITA
+RECUSADA
+EXPIRADA
+CANCELADA
+```
+
+## Pontuação de compatibilidade
+
+Poderá considerar:
+
+```text
+compatibilidade de horários
+tempo sem jogar
+disponibilidade da quadra
+prioridade do confronto
+quantidade de jogos no mês
+```
+
+---
+
+# 34. Tabela `confirmacoes_confrontos`
+
+Registra a resposta de cada jogador.
+
+## Campos
+
+```text
+id
+empresa_id
+confronto_id
+sugestao_id
+participante_id
+resposta
+respondido_em
+motivo_recusa
+observacoes
+```
+
+## Respostas
+
+```text
+PENDENTE
+CONFIRMADO
+RECUSADO
+```
+
+---
+
+# 35. Tabela `historico_confrontos`
+
+Registra todas as alterações.
+
+## Campos
+
+```text
+id
+empresa_id
+confronto_id
+status_anterior
+status_novo
+acao
+usuario_id
+participante_id
+motivo
+criado_em
+```
+
+---
+
+# 36. Tabela `mensalidades`
+
+Representa cobranças recorrentes.
+
+## Campos
+
+```text
+id
+empresa_id
+cliente_id
+participante_ranking_id
+plano_aluno_id
+tipo_mensalidade
+competencia
+data_vencimento
+valor_original
+desconto
+acrescimo
+valor_total
+status
+inicio_tolerancia
+fim_tolerancia
+criado_em
+atualizado_em
+```
+
+## Tipos
+
+```text
+RANKING
+AULA
+ASSOCIACAO
+OUTRA
+```
+
+## Status
+
+```text
+FUTURA
+PENDENTE
+VENCENDO_HOJE
+VENCIDA
+EM_TOLERANCIA
+PRAZO_FINAL
+PAGA
+CANCELADA
+ISENTA
+BLOQUEADA
+```
+
+## Regras
+
+* Cada mensalidade deverá possuir competência.
+* Não poderá haver duas cobranças idênticas para o mesmo cliente e competência.
+* A data de vencimento deverá respeitar o dia definido para o jogador ou aluno.
+* O prazo de tolerância deverá ser configurável.
+
+---
+
+# 37. Tabela `pagamentos`
+
+Registra pagamentos recebidos.
+
+## Campos
+
+```text
+id
+empresa_id
+cliente_id
+mensalidade_id
+reserva_id
+servico_id
+valor
+forma_pagamento
+data_pagamento
+status
+codigo_transacao
+observacoes
+comprovante_url
+registrado_por
+confirmado_por
+criado_em
+atualizado_em
+```
+
+## Formas de pagamento
+
+```text
+PIX
+DINHEIRO
+CARTAO_CREDITO
+CARTAO_DEBITO
+TRANSFERENCIA
+OUTRO
+```
+
+## Status
+
+```text
+PENDENTE
+CONFIRMADO
+PARCIAL
+ESTORNADO
+CANCELADO
+```
+
+## Regras
+
+* Um pagamento poderá estar relacionado a uma mensalidade ou reserva.
+* Pagamentos parciais deverão ser permitidos.
+* Estornos deverão exigir permissão especial.
+* Todo estorno deverá ser auditado.
+
+---
+
+# 38. Tabela `comprovantes_pagamento`
+
+Permite anexar mais de um comprovante.
+
+## Campos
+
+```text
+id
+empresa_id
+pagamento_id
+cliente_id
+arquivo_url
+nome_arquivo
+tipo_arquivo
+enviado_em
+status
+conferido_em
+conferido_por
+motivo_rejeicao
+```
+
+## Status
+
+```text
+AGUARDANDO_CONFERENCIA
+APROVADO
+REJEITADO
+```
+
+---
+
+# 39. Tabela `configuracoes_financeiras`
+
+Configura regras da empresa.
+
+## Campos
+
+```text
+id
+empresa_id
+dias_tolerancia_ranking
+dias_tolerancia_aulas
+enviar_alerta_antes_vencimento
+dias_alerta_antes
+permitir_pagamento_parcial
+suspensao_automatica
+atualizado_em
+atualizado_por
+```
+
+Para o MVP:
+
+```text
+suspensao_automatica = false
+```
+
+A decisão final continuará com Michel.
+
+---
+
+# 40. Tabela `notificacoes`
+
+Registra comunicações do sistema.
+
+## Campos
+
+```text
+id
+empresa_id
+usuario_id
+cliente_id
+tipo
+titulo
+mensagem
+canal
+status
+agendada_para
+enviada_em
+lida_em
+referencia_tipo
+referencia_id
+criado_em
+```
+
+## Canais
+
+```text
+SISTEMA
+EMAIL
+WHATSAPP
+SMS
+PUSH
+```
+
+No MVP, o canal principal poderá ser:
+
+```text
+SISTEMA
+```
+
+Além da geração de mensagens prontas para copiar e enviar pelo WhatsApp.
+
+## Status
+
+```text
+PENDENTE
+ENVIADA
+FALHA
+LIDA
+CANCELADA
+```
+
+---
+
+# 41. Tabela `modelos_mensagens`
+
+Permite configurar textos utilizados no atendimento.
+
+## Campos
+
+```text
+id
+empresa_id
+codigo
+nome
+tipo
+assunto
+conteudo
+ativo
+criado_em
+atualizado_em
+```
+
+## Exemplos de códigos
+
+```text
+RESERVA_CONFIRMADA
+RESERVA_CANCELADA
+CONFRONTO_SUGERIDO
+CONFRONTO_CONFIRMADO
+MENSALIDADE_VENCENDO
+MENSALIDADE_VENCIDA
+PRAZO_TOLERANCIA_FINAL
+```
+
+---
+
+# 42. Tabela `alertas`
+
+Representa pendências administrativas.
+
+## Campos
+
+```text
+id
+empresa_id
+tipo
+prioridade
+titulo
+descricao
+referencia_tipo
+referencia_id
+status
+responsavel_usuario_id
+gerado_em
+resolvido_em
+resolvido_por
+```
+
+## Prioridades
+
+```text
+BAIXA
+MEDIA
+ALTA
+CRITICA
+```
+
+## Exemplos
+
+```text
+Jogador há 30 dias sem partida
+Mensalidade no prazo final
+Reserva sem confirmação
+Reposição próxima de expirar
+```
+
+---
+
+# 43. Tabela `auditoria`
+
+Registra ações sensíveis realizadas no sistema.
+
+## Campos
+
+```text
+id
+empresa_id
+usuario_id
+modulo
+acao
+entidade
+entidade_id
+dados_anteriores
+dados_novos
+endereco_ip
+dispositivo
+criado_em
+```
+
+## Exemplos de ações
+
+```text
+LOGIN
+CRIAR
+ALTERAR
+CANCELAR
+EXCLUIR
+CONFIRMAR_PAGAMENTO
+ESTORNAR_PAGAMENTO
+SUSPENDER_JOGADOR
+REATIVAR_JOGADOR
+ALTERAR_PERMISSAO
+```
+
+---
+
+# 44. Relacionamentos principais
+
+```text
+EMPRESA
+  1 ─── N USUÁRIOS
+
+EMPRESA
+  1 ─── N CLIENTES
+
+EMPRESA
+  1 ─── N ESPAÇOS
+
+CLIENTE
+  1 ─── N RESERVAS
+
+ESPAÇO
+  1 ─── N RESERVAS
+
+PROFESSOR
+  1 ─── N AULAS
+
+CLIENTE
+  1 ─── N PLANOS DE ALUNO
+
+PLANO DE ALUNO
+  1 ─── N AULAS
+
+CATEGORIA DE RANKING
+  1 ─── N PARTICIPANTES
+
+PARTICIPANTE
+  1 ─── N DISPONIBILIDADES
+
+CONFRONTO
+  N ─── 2 PARTICIPANTES
+
+CONFRONTO
+  1 ─── N SUGESTÕES
+
+CONFRONTO
+  1 ─── 1 RESERVA CONFIRMADA
+
+CLIENTE
+  1 ─── N MENSALIDADES
+
+MENSALIDADE
+  1 ─── N PAGAMENTOS
+
+PAGAMENTO
+  1 ─── N COMPROVANTES
+```
+
+---
+
+# 45. Índices recomendados
+
+O banco deverá possuir índices para acelerar consultas.
+
+## Reservas
+
+```text
+empresa_id
+espaco_id
+data_hora_inicio
+data_hora_fim
+status
+```
+
+## Clientes
+
+```text
+empresa_id + nome_completo
+empresa_id + cpf
+empresa_id + telefone
+```
+
+## Mensalidades
+
+```text
+empresa_id
+cliente_id
+data_vencimento
+status
+competencia
+```
+
+## Ranking
+
+```text
+empresa_id
+categoria_id
+cliente_id
+status
+ultimo_jogo_em
+```
+
+## Confrontos
+
+```text
+empresa_id
+categoria_id
+status
+data_limite
+```
+
+---
+
+# 46. Restrições de integridade
+
+O banco deverá possuir restrições como:
+
+* valor total não pode ser negativo;
+* horário final deve ser maior que o inicial;
+* jogador A deve ser diferente do jogador B;
+* espaço deve pertencer à mesma empresa da reserva;
+* cliente deve pertencer à mesma empresa da mensalidade;
+* professor deve pertencer à mesma empresa da aula;
+* participante deve pertencer à categoria informada;
+* pagamento não pode superar o saldo sem autorização;
+* competência da mensalidade deve ser válida;
+* dia de vencimento deve estar entre 1 e 31.
+
+---
+
+# 47. Exclusão lógica
+
+Registros importantes não deverão ser apagados definitivamente.
+
+Exemplos:
+
+* clientes;
+* professores;
+* reservas;
+* aulas;
+* mensalidades;
+* pagamentos;
+* confrontos;
+* participantes do ranking.
+
+Em vez da exclusão, deverá ser utilizado:
+
+```text
+ativo = false
+```
+
+ou um status equivalente.
+
+Isso preservará o histórico da operação.
+
+---
+
+# 48. Backup e segurança
+
+O sistema deverá possuir:
+
+* backup automático;
+* backup criptografado;
+* política de retenção;
+* restauração testada;
+* comunicação HTTPS;
+* senhas protegidas por hash;
+* controle por empresa;
+* controle por perfil;
+* auditoria de ações;
+* proteção contra acesso indevido.
+
+---
+
+# 49. Adequação à LGPD
+
+O banco armazenará dados pessoais, como:
+
+* nome;
+* CPF;
+* telefone;
+* endereço;
+* data de nascimento;
+* histórico de pagamentos;
+* histórico esportivo.
+
+O sistema deverá permitir:
+
+* controle de acesso;
+* registro de consentimento quando necessário;
+* correção de dados;
+* anonimização futura;
+* exportação dos dados do cliente;
+* registro de quem acessou informações sensíveis;
+* exclusão ou anonimização conforme obrigação legal.
+
+---
+
+# 50. Tabelas previstas para fases futuras
+
+Não fazem parte do primeiro núcleo, mas já devem ser consideradas na arquitetura:
+
+```text
+produtos
+categorias_produtos
+estoques
+movimentacoes_estoque
+vendas
+itens_venda
+caixas
+movimentacoes_caixa
+fornecedores
+raquetes
+ordens_encordoamento
+historico_encordoamento
+eventos_day_use
+inscricoes_day_use
+filas_day_use
+bandas
+integrantes_bandas
+equipamentos_estudio
+reservas_equipamentos
+despesas
+contas_pagar
+centros_custo
+```
+
+---
+
+# 51. Ordem recomendada de criação das tabelas
+
+```text
+1. planos_saas
+2. empresas
+3. unidades
+4. usuarios
+5. perfis
+6. permissoes
+7. usuarios_perfis
+8. perfis_permissoes
+9. clientes
+10. clientes_vinculos
+11. professores
+12. professores_disponibilidades
+13. espacos
+14. espacos_horarios
+15. servicos
+16. precos_servicos
+17. recorrencias
+18. reservas
+19. historico_reservas
+20. planos_alunos
+21. aulas
+22. faltas_aulas
+23. reposicoes_aulas
+24. categorias_ranking
+25. participantes_ranking
+26. disponibilidades_jogadores
+27. confrontos_ranking
+28. sugestoes_confrontos
+29. confirmacoes_confrontos
+30. historico_confrontos
+31. mensalidades
+32. pagamentos
+33. comprovantes_pagamento
+34. configuracoes_financeiras
+35. notificacoes
+36. modelos_mensagens
+37. alertas
+38. auditoria
+```
+
+---
+
+# 52. Estrutura inicial do projeto
+
+```text
+JHS_Arena/
+│
+├── src/
+│   ├── JHSArena.Domain/
+│   │   ├── Entities/
+│   │   ├── Enums/
+│   │   ├── ValueObjects/
+│   │   └── Interfaces/
+│   │
+│   ├── JHSArena.Application/
+│   │   ├── UseCases/
+│   │   ├── DTOs/
+│   │   ├── Validators/
+│   │   └── Interfaces/
+│   │
+│   ├── JHSArena.Infrastructure/
+│   │   ├── Persistence/
+│   │   ├── Configurations/
+│   │   ├── Migrations/
+│   │   └── Services/
+│   │
+│   ├── JHSArena.Api/
+│   │   ├── Controllers/
+│   │   ├── Middlewares/
+│   │   └── Configuration/
+│   │
+│   ├── JHSArena.Desktop/
+│   │   ├── Views/
+│   │   ├── ViewModels/
+│   │   ├── Services/
+│   │   └── Assets/
+│   │
+│   └── JHSArena.Shared/
+│
+├── tests/
+│   ├── JHSArena.UnitTests/
+│   └── JHSArena.IntegrationTests/
+│
+├── docs/
+│   ├── levantamento-md-tennis.md
+│   ├── arquitetura-funcional.md
+│   ├── modelo-banco-dados.md
+│   ├── requisitos-funcionais.md
+│   └── regras-negocio.md
+│
+├── docker/
+├── scripts/
+├── .gitignore
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+# 53. Decisões registradas
+
+O projeto utilizará:
+
+```text
+Linguagem: C#
+Desktop: Avalonia UI
+API: ASP.NET Core
+Banco: PostgreSQL
+ORM: Entity Framework Core
+Autenticação: ASP.NET Core Identity
+Arquitetura: Clean Architecture
+Comunicação: API REST com HTTPS
+Hospedagem: Linux com Docker
+Plataformas desktop: Windows e Linux
+```
+
+---
+
+# 54. Resultado esperado
+
+Com esse modelo, o JHS Arena estará preparado para:
+
+* substituir o caderno de reservas;
+* controlar conflitos de horários;
+* administrar aulas;
+* organizar confrontos;
+* controlar mensalidades;
+* identificar inadimplentes;
+* registrar pagamentos;
+* gerar alertas;
+* manter histórico;
+* atender várias empresas;
+* funcionar em Windows e Linux;
+* receber novos módulos futuramente.

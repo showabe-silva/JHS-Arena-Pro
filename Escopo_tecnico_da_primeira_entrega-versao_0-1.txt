@@ -1,0 +1,1201 @@
+# JHS Arena
+
+## Escopo Técnico da Primeira Entrega — Versão 0.1
+
+## 1. Objetivo da primeira entrega
+
+Construir o núcleo operacional do JHS Arena, permitindo que a MD Tennis substitua o caderno de reservas por uma agenda digital centralizada.
+
+A primeira entrega não deverá conter todos os módulos do produto.
+
+Ela deverá validar:
+
+* arquitetura;
+* banco de dados;
+* autenticação;
+* controle de usuários;
+* cadastro de clientes;
+* cadastro de espaços;
+* agenda;
+* reservas;
+* cancelamentos;
+* histórico de alterações.
+
+---
+
+# 2. Resultado esperado
+
+Ao final da primeira entrega, um funcionário da MD Tennis deverá conseguir:
+
+1. Acessar o sistema;
+2. Entrar com usuário e senha;
+3. Consultar a agenda;
+4. Cadastrar um cliente;
+5. Consultar quadras e estúdios;
+6. Criar uma reserva;
+7. Alterar uma reserva;
+8. Cancelar uma reserva;
+9. Identificar horários disponíveis;
+10. Impedir reservas sobrepostas;
+11. Visualizar quem criou ou alterou uma reserva;
+12. Consultar o histórico da reserva.
+
+---
+
+# 3. Escopo incluído
+
+A primeira entrega deverá conter os seguintes módulos:
+
+## 3.1 Base do sistema
+
+* solução C#;
+* arquitetura em camadas;
+* banco PostgreSQL;
+* Entity Framework Core;
+* API ASP.NET Core;
+* aplicativo desktop Avalonia UI;
+* Docker para banco e API;
+* controle de configurações;
+* registro de logs;
+* tratamento global de erros.
+
+## 3.2 Empresa e unidade
+
+* cadastro da empresa;
+* cadastro da unidade principal;
+* configuração de horário;
+* configuração de fuso horário;
+* status da empresa.
+
+## 3.3 Autenticação
+
+* login;
+* logout;
+* senha protegida;
+* controle de sessão;
+* bloqueio de usuário inativo;
+* identificação da empresa;
+* identificação do perfil.
+
+## 3.4 Usuários e permissões
+
+* cadastro de usuário;
+* alteração de usuário;
+* ativação e inativação;
+* atribuição de perfil;
+* permissões básicas;
+* proprietário;
+* administrador;
+* recepção.
+
+## 3.5 Clientes
+
+* cadastro;
+* edição;
+* consulta;
+* inativação;
+* pesquisa por nome;
+* pesquisa por telefone;
+* pesquisa por CPF;
+* histórico básico.
+
+## 3.6 Espaços
+
+* cadastro;
+* edição;
+* ativação e inativação;
+* tipo de espaço;
+* valor padrão;
+* horário de funcionamento;
+* capacidade;
+* status operacional.
+
+## 3.7 Serviços
+
+* cadastro de serviço;
+* definição do valor;
+* definição da duração;
+* associação com tipo de espaço;
+* ativação e inativação.
+
+## 3.8 Agenda
+
+* visualização diária;
+* visualização semanal;
+* filtro por espaço;
+* filtro por tipo de reserva;
+* visualização de horários livres;
+* visualização de horários ocupados;
+* identificação de bloqueios;
+* atualização da agenda.
+
+## 3.9 Reservas
+
+* criação;
+* edição;
+* confirmação;
+* cancelamento;
+* conclusão;
+* registro de valor;
+* registro do cliente;
+* registro do espaço;
+* registro do serviço;
+* registro de observações;
+* prevenção de conflito.
+
+## 3.10 Histórico e auditoria
+
+* usuário responsável;
+* data e horário;
+* criação;
+* alteração;
+* cancelamento;
+* dados anteriores;
+* dados posteriores;
+* motivo de cancelamento.
+
+---
+
+# 4. Fora do escopo desta entrega
+
+Não deverão ser implementados ainda:
+
+* aulas;
+* professores;
+* planos mensais;
+* reposições;
+* ranking;
+* confrontos;
+* mensalidades;
+* pagamentos;
+* estúdios com regras específicas;
+* day use;
+* loja;
+* estoque;
+* encordoamento;
+* WhatsApp automático;
+* portal do jogador;
+* aplicativo mobile;
+* modo offline;
+* relatórios financeiros;
+* inteligência artificial.
+
+Os estúdios poderão ser cadastrados como espaços comuns nesta primeira fase.
+
+---
+
+# 5. Estrutura da solução
+
+```text
+JHSArena.sln
+│
+├── src/
+│   ├── JHSArena.Domain
+│   ├── JHSArena.Application
+│   ├── JHSArena.Infrastructure
+│   ├── JHSArena.Api
+│   ├── JHSArena.Desktop
+│   └── JHSArena.Shared
+│
+└── tests/
+    ├── JHSArena.UnitTests
+    └── JHSArena.IntegrationTests
+```
+
+---
+
+# 6. Responsabilidade de cada camada
+
+## 6.1 Domain
+
+Deverá conter:
+
+* entidades;
+* enumerações;
+* objetos de valor;
+* regras centrais;
+* interfaces de domínio;
+* exceções de negócio.
+
+Entidades iniciais:
+
+```text
+Empresa
+Unidade
+Usuario
+Perfil
+Permissao
+Cliente
+Espaco
+Servico
+Reserva
+HistoricoReserva
+Auditoria
+```
+
+---
+
+## 6.2 Application
+
+Deverá conter:
+
+* casos de uso;
+* DTOs;
+* comandos;
+* consultas;
+* validações;
+* interfaces de repositórios;
+* respostas padronizadas.
+
+Casos de uso iniciais:
+
+```text
+AutenticarUsuario
+CriarUsuario
+AtualizarUsuario
+CadastrarCliente
+AtualizarCliente
+CadastrarEspaco
+AtualizarEspaco
+CadastrarServico
+CriarReserva
+AlterarReserva
+CancelarReserva
+ConsultarAgenda
+ConsultarDisponibilidade
+ConsultarHistoricoReserva
+```
+
+---
+
+## 6.3 Infrastructure
+
+Deverá conter:
+
+* acesso ao PostgreSQL;
+* implementação dos repositórios;
+* configurações do Entity Framework;
+* migrations;
+* autenticação;
+* logs;
+* serviços de data e hora;
+* persistência de auditoria.
+
+---
+
+## 6.4 API
+
+Deverá expor os recursos centrais.
+
+Endpoints iniciais:
+
+```text
+/api/auth
+/api/usuarios
+/api/clientes
+/api/espacos
+/api/servicos
+/api/reservas
+/api/agenda
+/api/auditoria
+```
+
+---
+
+## 6.5 Desktop
+
+Deverá conter a aplicação Avalonia UI para Windows e Linux.
+
+Estrutura recomendada:
+
+```text
+Views
+ViewModels
+Models
+Services
+Converters
+Controls
+Assets
+Navigation
+```
+
+A aplicação deverá seguir MVVM.
+
+---
+
+# 7. Entidades da primeira entrega
+
+## 7.1 Empresa
+
+Campos mínimos:
+
+```text
+Id
+RazaoSocial
+NomeFantasia
+Cnpj
+Telefone
+WhatsApp
+Email
+FusoHorario
+Status
+CriadoEm
+AtualizadoEm
+```
+
+## 7.2 Unidade
+
+```text
+Id
+EmpresaId
+Nome
+Endereco
+Telefone
+HorarioFuncionamento
+Ativa
+```
+
+## 7.3 Usuário
+
+```text
+Id
+EmpresaId
+UnidadeId
+Nome
+Email
+Telefone
+SenhaHash
+Status
+UltimoAcesso
+CriadoEm
+AtualizadoEm
+```
+
+## 7.4 Cliente
+
+```text
+Id
+EmpresaId
+NomeCompleto
+Cpf
+Telefone
+WhatsApp
+Email
+DataNascimento
+Observacoes
+Status
+CriadoEm
+AtualizadoEm
+```
+
+## 7.5 Espaço
+
+```text
+Id
+EmpresaId
+UnidadeId
+Nome
+Tipo
+Capacidade
+ValorPadrao
+HorarioAbertura
+HorarioFechamento
+Status
+Observacoes
+```
+
+## 7.6 Serviço
+
+```text
+Id
+EmpresaId
+Nome
+Categoria
+DuracaoMinutos
+ValorPadrao
+ExigeEspaco
+Ativo
+```
+
+## 7.7 Reserva
+
+```text
+Id
+EmpresaId
+UnidadeId
+ClienteId
+EspacoId
+ServicoId
+DataHoraInicio
+DataHoraFim
+Status
+ValorOriginal
+Desconto
+Acrescimo
+ValorTotal
+Observacoes
+CriadoPor
+CriadoEm
+AtualizadoPor
+AtualizadoEm
+CanceladoPor
+CanceladoEm
+MotivoCancelamento
+```
+
+---
+
+# 8. Estados da reserva
+
+A reserva deverá seguir um fluxo controlado.
+
+```text
+PRE_RESERVA
+      ↓
+AGUARDANDO_CONFIRMACAO
+      ↓
+CONFIRMADA
+      ↓
+EM_ANDAMENTO
+      ↓
+CONCLUIDA
+```
+
+Caminhos alternativos:
+
+```text
+PRE_RESERVA → CANCELADA
+AGUARDANDO_CONFIRMACAO → CANCELADA
+CONFIRMADA → CANCELADA
+CONFIRMADA → NAO_COMPARECEU
+```
+
+Não deverá ser permitido alterar uma reserva concluída sem permissão administrativa.
+
+---
+
+# 9. Requisitos funcionais
+
+## RF-001 — Autenticação
+
+O sistema deverá permitir que um usuário ativo acesse a aplicação utilizando e-mail e senha.
+
+## RF-002 — Bloqueio de acesso
+
+O sistema deverá impedir o acesso de usuários inativos ou bloqueados.
+
+## RF-003 — Cadastro de clientes
+
+O sistema deverá permitir cadastrar clientes.
+
+## RF-004 — Pesquisa de clientes
+
+O sistema deverá permitir pesquisar clientes por nome, CPF, telefone ou WhatsApp.
+
+## RF-005 — Cadastro de espaços
+
+O sistema deverá permitir cadastrar quadras, estúdios e outros espaços.
+
+## RF-006 — Cadastro de serviços
+
+O sistema deverá permitir cadastrar serviços e seus valores.
+
+## RF-007 — Consulta de agenda
+
+O sistema deverá exibir reservas por dia e semana.
+
+## RF-008 — Consulta de disponibilidade
+
+O sistema deverá informar quais espaços estão disponíveis em determinado horário.
+
+## RF-009 — Criação de reserva
+
+O sistema deverá permitir criar uma reserva para um cliente.
+
+## RF-010 — Cálculo do valor
+
+O valor padrão deverá ser carregado automaticamente a partir do serviço ou espaço.
+
+## RF-011 — Alteração de reserva
+
+O sistema deverá permitir alterar uma reserva existente.
+
+## RF-012 — Cancelamento de reserva
+
+O sistema deverá permitir cancelar uma reserva mediante registro do motivo.
+
+## RF-013 — Prevenção de conflito
+
+O sistema deverá impedir reservas sobrepostas no mesmo espaço.
+
+## RF-014 — Histórico
+
+O sistema deverá manter o histórico das alterações realizadas.
+
+## RF-015 — Auditoria
+
+O sistema deverá registrar ações sensíveis executadas pelos usuários.
+
+## RF-016 — Filtros da agenda
+
+O sistema deverá permitir filtrar a agenda por espaço, status e tipo.
+
+## RF-017 — Atualização visual
+
+A agenda deverá ser atualizada após criação, alteração ou cancelamento de uma reserva.
+
+## RF-018 — Controle de permissão
+
+O sistema deverá verificar se o usuário possui permissão antes de executar ações restritas.
+
+---
+
+# 10. Regras de negócio
+
+## RN-001
+
+A data e o horário final deverão ser posteriores ao início.
+
+## RN-002
+
+Uma reserva deverá possuir um cliente ativo.
+
+## RN-003
+
+Uma reserva deverá possuir um espaço ativo.
+
+## RN-004
+
+O espaço deverá estar disponível no intervalo solicitado.
+
+## RN-005
+
+O espaço não poderá estar em manutenção.
+
+## RN-006
+
+O horário deverá respeitar o funcionamento da unidade e do espaço.
+
+## RN-007
+
+O sistema deverá impedir conflito mesmo quando dois funcionários tentarem reservar simultaneamente.
+
+## RN-008
+
+Toda alteração deverá registrar o usuário responsável.
+
+## RN-009
+
+O cancelamento deverá exigir um motivo.
+
+## RN-010
+
+Uma reserva cancelada não deverá bloquear o espaço.
+
+## RN-011
+
+O valor total deverá ser calculado da seguinte forma:
+
+```text
+valor total =
+valor original
+- desconto
++ acréscimo
+```
+
+## RN-012
+
+Descontos somente poderão ser aplicados por usuários autorizados.
+
+## RN-013
+
+O sistema não deverá excluir definitivamente reservas.
+
+## RN-014
+
+Um cliente inativo não poderá receber novas reservas.
+
+## RN-015
+
+Espaços inativos não poderão receber novas reservas.
+
+## RN-016
+
+Somente usuários autorizados poderão visualizar a auditoria.
+
+---
+
+# 11. Telas da primeira entrega
+
+## 11.1 Login
+
+Elementos:
+
+* logotipo;
+* e-mail;
+* senha;
+* botão entrar;
+* mensagem de erro;
+* indicador de carregamento.
+
+## 11.2 Dashboard inicial
+
+Elementos:
+
+* reservas de hoje;
+* espaços ocupados;
+* espaços livres;
+* cancelamentos do dia;
+* botão nova reserva;
+* acesso à agenda;
+* alertas básicos.
+
+## 11.3 Agenda
+
+Elementos:
+
+* seletor de data;
+* botão dia anterior;
+* botão próximo dia;
+* botão hoje;
+* filtros;
+* espaços em colunas;
+* horários em linhas;
+* blocos de reserva;
+* botão nova reserva.
+
+## 11.4 Nova reserva
+
+Campos:
+
+* cliente;
+* espaço;
+* serviço;
+* data;
+* horário inicial;
+* horário final;
+* valor;
+* desconto;
+* acréscimo;
+* total;
+* status;
+* observações.
+
+## 11.5 Clientes
+
+Elementos:
+
+* campo de busca;
+* lista;
+* botão novo cliente;
+* editar;
+* inativar;
+* visualizar histórico.
+
+## 11.6 Espaços
+
+Elementos:
+
+* lista;
+* nome;
+* tipo;
+* valor;
+* horário;
+* status;
+* editar;
+* inativar.
+
+## 11.7 Serviços
+
+Elementos:
+
+* lista;
+* nome;
+* categoria;
+* duração;
+* valor;
+* status.
+
+## 11.8 Histórico da reserva
+
+Elementos:
+
+* ação;
+* usuário;
+* data;
+* horário;
+* campo alterado;
+* valor anterior;
+* valor novo;
+* motivo.
+
+## 11.9 Usuários
+
+Elementos:
+
+* nome;
+* e-mail;
+* perfil;
+* status;
+* último acesso;
+* novo usuário;
+* editar;
+* bloquear.
+
+---
+
+# 12. Endpoints iniciais da API
+
+## Autenticação
+
+```text
+POST /api/auth/login
+POST /api/auth/logout
+GET  /api/auth/me
+```
+
+## Usuários
+
+```text
+GET    /api/usuarios
+GET    /api/usuarios/{id}
+POST   /api/usuarios
+PUT    /api/usuarios/{id}
+PATCH  /api/usuarios/{id}/status
+```
+
+## Clientes
+
+```text
+GET    /api/clientes
+GET    /api/clientes/{id}
+POST   /api/clientes
+PUT    /api/clientes/{id}
+PATCH  /api/clientes/{id}/status
+```
+
+## Espaços
+
+```text
+GET    /api/espacos
+GET    /api/espacos/{id}
+POST   /api/espacos
+PUT    /api/espacos/{id}
+PATCH  /api/espacos/{id}/status
+```
+
+## Serviços
+
+```text
+GET    /api/servicos
+GET    /api/servicos/{id}
+POST   /api/servicos
+PUT    /api/servicos/{id}
+PATCH  /api/servicos/{id}/status
+```
+
+## Reservas
+
+```text
+GET    /api/reservas
+GET    /api/reservas/{id}
+POST   /api/reservas
+PUT    /api/reservas/{id}
+POST   /api/reservas/{id}/confirmar
+POST   /api/reservas/{id}/cancelar
+POST   /api/reservas/{id}/concluir
+GET    /api/reservas/{id}/historico
+```
+
+## Agenda
+
+```text
+GET /api/agenda/dia
+GET /api/agenda/semana
+GET /api/agenda/disponibilidade
+```
+
+---
+
+# 13. Validações obrigatórias
+
+## Cliente
+
+* nome obrigatório;
+* CPF válido quando informado;
+* telefone válido quando informado;
+* e-mail válido quando informado.
+
+## Espaço
+
+* nome obrigatório;
+* tipo obrigatório;
+* horário inicial menor que o final;
+* valor não negativo.
+
+## Serviço
+
+* nome obrigatório;
+* duração maior que zero;
+* valor não negativo.
+
+## Reserva
+
+* cliente obrigatório;
+* espaço obrigatório;
+* serviço obrigatório;
+* início obrigatório;
+* fim obrigatório;
+* início menor que o fim;
+* valor não negativo;
+* ausência de conflito;
+* horário dentro do funcionamento.
+
+---
+
+# 14. Testes obrigatórios
+
+## 14.1 Testes unitários
+
+Deverão verificar:
+
+* cálculo do valor total;
+* validação dos horários;
+* transição de status;
+* obrigatoriedade do motivo de cancelamento;
+* cliente inativo;
+* espaço indisponível;
+* permissão de desconto.
+
+## 14.2 Testes de integração
+
+Deverão verificar:
+
+* criação de cliente;
+* criação de espaço;
+* criação de serviço;
+* criação de reserva;
+* bloqueio de conflito;
+* alteração de reserva;
+* cancelamento;
+* persistência do histórico;
+* isolamento entre empresas.
+
+## 14.3 Testes de interface
+
+Deverão verificar:
+
+* login;
+* navegação;
+* criação de reserva;
+* mensagens de erro;
+* atualização da agenda;
+* funcionamento no Windows;
+* funcionamento no Linux.
+
+---
+
+# 15. Dados iniciais da MD Tennis
+
+A primeira base deverá conter:
+
+## Empresa
+
+```text
+Nome fantasia: MD Tennis
+Fuso horário: America/Sao_Paulo
+Status: Ativa
+```
+
+## Unidade
+
+```text
+Unidade Principal
+```
+
+## Espaços
+
+```text
+Quadra de Tênis 1
+Quadra de Tênis 2
+Quadra de Tênis 3
+Quadra de Beach Tennis
+Estúdio 1
+Estúdio 2
+```
+
+O Estúdio 2 poderá iniciar como inativo enquanto estiver em construção.
+
+## Perfis
+
+```text
+Proprietário
+Administrador
+Recepção
+```
+
+## Usuário inicial
+
+```text
+Michel
+Perfil: Proprietário
+```
+
+Os dados de acesso deverão ser definidos com segurança durante a implantação.
+
+---
+
+# 16. Etapas de implementação
+
+## Etapa 1 — Preparação do ambiente
+
+* instalar SDK .NET;
+* instalar PostgreSQL ou Docker;
+* instalar Git;
+* instalar editor;
+* validar Windows;
+* validar Linux.
+
+## Etapa 2 — Criação da solução
+
+* criar solution;
+* criar projetos;
+* adicionar referências;
+* configurar dependências;
+* configurar Git.
+
+## Etapa 3 — Domínio
+
+* criar entidades;
+* criar enums;
+* criar validações;
+* criar regras de negócio.
+
+## Etapa 4 — Banco de dados
+
+* criar DbContext;
+* mapear entidades;
+* criar migrations;
+* criar banco;
+* inserir dados iniciais.
+
+## Etapa 5 — Autenticação
+
+* implementar Identity;
+* implementar login;
+* criar perfis;
+* aplicar autorização.
+
+## Etapa 6 — API de cadastros
+
+* usuários;
+* clientes;
+* espaços;
+* serviços.
+
+## Etapa 7 — Reservas
+
+* criar reserva;
+* verificar disponibilidade;
+* alterar;
+* cancelar;
+* histórico.
+
+## Etapa 8 — Agenda
+
+* consulta diária;
+* consulta semanal;
+* filtros;
+* disponibilidade.
+
+## Etapa 9 — Desktop
+
+* login;
+* menu;
+* dashboard;
+* clientes;
+* espaços;
+* agenda;
+* reserva.
+
+## Etapa 10 — Testes
+
+* unitários;
+* integração;
+* interface;
+* Windows;
+* Linux.
+
+## Etapa 11 — Piloto interno
+
+* cadastrar dados reais;
+* testar reservas;
+* corrigir falhas;
+* validar com usuários.
+
+---
+
+# 17. Critérios de aceite
+
+## CA-001
+
+O sistema deverá iniciar corretamente no Windows.
+
+## CA-002
+
+O sistema deverá iniciar corretamente no Linux.
+
+## CA-003
+
+Um usuário autorizado deverá conseguir entrar.
+
+## CA-004
+
+Um cliente deverá poder ser cadastrado.
+
+## CA-005
+
+Um espaço deverá poder ser cadastrado.
+
+## CA-006
+
+Um serviço deverá poder ser cadastrado.
+
+## CA-007
+
+Uma reserva válida deverá poder ser criada.
+
+## CA-008
+
+Uma reserva conflitante deverá ser bloqueada.
+
+## CA-009
+
+Uma reserva deverá aparecer imediatamente na agenda.
+
+## CA-010
+
+Uma reserva deverá poder ser alterada.
+
+## CA-011
+
+Uma reserva deverá poder ser cancelada.
+
+## CA-012
+
+O cancelamento deverá liberar o espaço.
+
+## CA-013
+
+O histórico deverá registrar todas as alterações.
+
+## CA-014
+
+Usuários sem permissão não deverão executar ações restritas.
+
+## CA-015
+
+Os dados da empresa deverão permanecer isolados.
+
+---
+
+# 18. Definição de pronto
+
+Uma funcionalidade será considerada pronta quando:
+
+* estiver implementada;
+* possuir validações;
+* possuir tratamento de erro;
+* estiver integrada ao banco;
+* possuir teste;
+* funcionar no Windows;
+* funcionar no Linux;
+* possuir registro de auditoria quando necessário;
+* estiver documentada;
+* tiver sido validada no fluxo completo.
+
+---
+
+# 19. Marcos da primeira entrega
+
+## Marco 1 — Base técnica
+
+Resultado:
+
+```text
+API funcionando
+Banco conectado
+Aplicativo abrindo
+Login inicial
+```
+
+## Marco 2 — Cadastros
+
+Resultado:
+
+```text
+Usuários
+Clientes
+Espaços
+Serviços
+```
+
+## Marco 3 — Reservas
+
+Resultado:
+
+```text
+Criar
+Alterar
+Cancelar
+Impedir conflitos
+```
+
+## Marco 4 — Agenda
+
+Resultado:
+
+```text
+Visualização diária
+Visualização semanal
+Filtros
+Disponibilidade
+```
+
+## Marco 5 — Validação
+
+Resultado:
+
+```text
+Testes Windows
+Testes Linux
+Teste com dados reais
+Correções
+```
+
+---
+
+# 20. Próxima fase após a primeira entrega
+
+Depois da validação da agenda e das reservas, a segunda entrega deverá incluir:
+
+```text
+Professores
+Planos de alunos
+Aulas fixas
+Faltas
+Reposições
+Mensalidades de alunos
+```
+
+A terceira entrega deverá incluir:
+
+```text
+Ranking
+Disponibilidades
+Confrontos
+Confirmações
+Cancelamentos
+Mensalidade do ranking
+Inadimplência
+```

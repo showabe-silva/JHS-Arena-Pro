@@ -1,0 +1,642 @@
+1.Como as reservas são registradas hoje?
+
+Hoje quando um cliente faz uma reserva, nos anotamos os dados do contratante, anotamos o dia e o horario escolhido mediante a disponibilidade, estes dados sao anotados em um caderno onde sao feitos todos as resevas.
+
+2.Quem pode reservar ou cancelar uma quadra?
+
+hoje temos alguns funcionarios e eles que agendam e cacelam uma quadra no momento.
+
+3.Como são definidos os preços?
+
+os preços sao definidos mediante uma tabela de preços pre definidas.
+
+4.Existe difernça de preço por horarios?
+
+não.
+
+5.Como os professores organizam suas agendas?
+
+as agendas são oeganizadas pela diretoria e secretaria da md tennis definindo os dias mediante e disponibilidade do aluno e das quadras, assim que definido um dia e horario este horario fica disponivel apenas para o determinado aluno e professor.
+
+6.Como os alunos pagam as mensalidades?
+
+os alnos pagam via cartão de credito ou debito, dinheiro ou pix
+
+7.Como funcionam faltas e reposições?
+
+se as faltas forem justificadas com antecedencia as aulas sao remarcadas de acordo com a disponibilidade de quadra e horario.
+
+8.Quem organiza os confrontos do ranking?
+
+os confrontos do ranking sao determinados via sorteio no letzplay 
+
+9.Como os jogadores informam disponibilidade?
+
+10.Como são controlados os pagamentos do ranking?
+
+os jogadores postão suas disponibilades de dias e horarios no grupo de whatsapp onde estao todos os jogadores, existe um grupo para cada categoria.
+
+11.Como funcionam as reservas dos estúdios?
+
+as reservas sao feitas via whatsapp e telefone diretamente com o administrador do estudio.
+
+12.Como é administrado o day use?
+
+hoje o day use e administrado via whatsapp, no sabado e enviado alista no grupo domingueira que e o grupo do day use onde todos que tem a intençao de participar no domingo subsequente adicionem o nome em uma pre lista ao comparecer no domingo todos se juntam e vao fazendo um revesamento nas quadras.
+
+13.Como são registradas as vendas?
+
+as vendas sao registradas via anotação em uma caderneta.
+
+14.Como funciona o encordoamento desde a entrega até a retirada?
+
+o jogador/aluno faz a solicitação de encordoamento definindo a corda e a libragem desejada, ele deixa a raquete na academia onde temos um profissional que faz as encordoações ele passa o valor e o prazo de entrega, junto com esse serviço e criado um historico de encordoamento onde e anotado o ultimo encordoamento a corda e a libragen escolhida.
+
+15.Quais são os três maiores problemas da operação atualmente? 
+
+1-responder com eficiencia as mensagens via whatsap
+2-marcar os confrontos do ranking com eficacia
+3-administração geral
+
+
+# JHS Arena
+
+## Levantamento Inicial da Operação — MD Tennis
+
+### 1. Objetivo do documento
+
+Registrar o funcionamento atual da MD Tennis, identificar os principais problemas operacionais e definir os requisitos iniciais da plataforma JHS Arena.
+
+A MD Tennis será utilizada como empresa piloto para validação do sistema, porém a plataforma deverá ser desenvolvida com arquitetura multiempresa, permitindo sua comercialização para outras academias, clubes, arenas e centros esportivos.
+
+---
+
+# 2. Estrutura atual da MD Tennis
+
+A empresa possui atualmente:
+
+* 3 quadras de tênis de saibro;
+* 1 quadra de beach tennis;
+* 1 estúdio para ensaios;
+* 1 segundo estúdio em construção;
+* 4 professores de tênis;
+* loja de produtos relacionados ao tênis;
+* loja ou operação comercial relacionada aos estúdios;
+* serviço de encordoamento de raquetes;
+* ranking interno gerenciado parcialmente pelo LetzPlay;
+* day use aos domingos.
+
+---
+
+# 3. Fontes de receita
+
+A MD Tennis trabalha com as seguintes fontes de receita:
+
+1. Locação de quadras de tênis;
+2. Locação de quadra de beach tennis;
+3. Mensalidades de aulas de tênis;
+4. Mensalidade ou taxa de participação no ranking;
+5. Day use aos domingos;
+6. Locação de estúdios para ensaios;
+7. Venda de produtos de tênis;
+8. Venda de produtos relacionados aos estúdios;
+9. Serviço de encordoamento de raquetes.
+
+---
+
+# 4. Funcionamento atual da operação
+
+## 4.1 Reservas de quadras
+
+Quando um cliente solicita uma reserva, um funcionário verifica manualmente a disponibilidade.
+
+São registrados:
+
+* nome ou dados do contratante;
+* data da reserva;
+* horário escolhido;
+* espaço reservado.
+
+As informações são anotadas em um caderno utilizado para todas as reservas.
+
+### Problemas identificados
+
+* possibilidade de informações ilegíveis;
+* dificuldade para localizar reservas;
+* risco de reservas duplicadas;
+* ausência de histórico confiável;
+* dificuldade para alterar ou cancelar;
+* falta de acesso simultâneo por vários funcionários;
+* ausência de confirmação automática;
+* ausência de lembrete para o cliente.
+
+---
+
+## 4.2 Responsáveis por reservas e cancelamentos
+
+Atualmente, alguns funcionários possuem autorização para:
+
+* criar reservas;
+* alterar horários;
+* cancelar reservas.
+
+Não existe, aparentemente, um controle formal de permissões ou registro de qual funcionário executou cada ação.
+
+### Necessidade identificada
+
+O sistema deverá registrar:
+
+* usuário responsável;
+* data e horário da ação;
+* reserva criada;
+* reserva alterada;
+* reserva cancelada;
+* motivo do cancelamento, quando informado.
+
+---
+
+## 4.3 Tabela de preços
+
+Os valores são definidos por meio de uma tabela de preços previamente estabelecida.
+
+Não existe diferença de preço de acordo com o horário.
+
+### Necessidade identificada
+
+O sistema deverá permitir:
+
+* cadastrar serviços;
+* cadastrar preços;
+* definir duração;
+* definir unidade de cobrança;
+* ativar ou desativar serviços;
+* manter histórico de alterações de preço.
+
+Mesmo que a MD Tennis não use preços diferentes por horário, a plataforma deverá estar preparada para isso no futuro.
+
+---
+
+## 4.4 Agenda dos professores
+
+A diretoria e a secretaria organizam as agendas dos professores.
+
+O horário é definido considerando:
+
+* disponibilidade do aluno;
+* disponibilidade do professor;
+* disponibilidade da quadra.
+
+Após a definição, aquele horário fica reservado exclusivamente para o aluno e para o professor correspondente.
+
+### Problemas identificados
+
+* processo manual;
+* risco de conflito entre professor, aluno e quadra;
+* dificuldade de consultar horários livres;
+* dificuldade para controlar faltas;
+* dificuldade para organizar reposições;
+* dependência da secretaria ou diretoria.
+
+---
+
+## 4.5 Pagamento das mensalidades
+
+Os alunos podem pagar por:
+
+* cartão de crédito;
+* cartão de débito;
+* dinheiro;
+* PIX.
+
+### Necessidade identificada
+
+O sistema deverá registrar:
+
+* aluno;
+* plano contratado;
+* competência da mensalidade;
+* valor;
+* vencimento;
+* data do pagamento;
+* forma de pagamento;
+* status;
+* desconto;
+* acréscimo;
+* observações.
+
+Status sugeridos:
+
+* pendente;
+* pago;
+* vencido;
+* parcialmente pago;
+* cancelado;
+* isento.
+
+---
+
+## 4.6 Faltas e reposições
+
+Quando a falta é justificada com antecedência, a aula pode ser remarcada.
+
+A reposição depende da disponibilidade simultânea de:
+
+* aluno;
+* professor;
+* quadra.
+
+### Regras iniciais
+
+* a reposição deve estar vinculada à aula original;
+* o sistema deve registrar o motivo da ausência;
+* o sistema deve registrar quando a ausência foi comunicada;
+* a reposição somente poderá ser agendada em horário disponível;
+* o sistema deverá impedir conflitos;
+* a direção poderá aprovar ou negar reposições;
+* deverá ser possível definir um prazo limite para utilização da reposição.
+
+---
+
+## 4.7 Ranking e confrontos
+
+Os confrontos são definidos por sorteio no LetzPlay.
+
+O LetzPlay é utilizado para administrar o ranking, porém a marcação prática dos jogos continua dependendo da comunicação entre jogadores e funcionários.
+
+### Problemas identificados
+
+* jogadores ficam longos períodos sem jogar;
+* alguns jogadores conseguem jogar com mais frequência;
+* não existe prioridade clara;
+* horários compatíveis não são aproveitados;
+* cancelamentos podem não ser comunicados;
+* a academia precisa acompanhar grupos de WhatsApp;
+* falta uma visão centralizada dos confrontos pendentes.
+
+---
+
+## 4.8 Disponibilidade dos jogadores
+
+Cada categoria do ranking possui um grupo próprio no WhatsApp.
+
+Os jogadores publicam no grupo:
+
+* dias disponíveis;
+* horários disponíveis.
+
+Essas mensagens precisam ser interpretadas manualmente para organizar uma partida.
+
+### Problemas identificados
+
+* mensagens se perdem no grupo;
+* informações podem ficar desatualizadas;
+* diferentes formatos de mensagem;
+* dificuldade de cruzar disponibilidades;
+* demora para responder;
+* dependência de leitura manual;
+* ausência de confirmação estruturada.
+
+### Solução proposta
+
+Cada jogador deverá informar no sistema:
+
+* dias disponíveis;
+* intervalos de horário;
+* disponibilidade recorrente;
+* disponibilidade específica;
+* datas indisponíveis;
+* preferência de período;
+* possibilidade de jogar aos finais de semana.
+
+---
+
+## 4.9 Controle dos pagamentos do ranking
+
+A resposta recebida não especificou claramente como os pagamentos do ranking são registrados.
+
+Esse item permanece pendente de confirmação.
+
+Precisamos identificar:
+
+* valor da mensalidade;
+* dia de vencimento;
+* formas de pagamento;
+* existência de planos;
+* controle de inadimplência;
+* bloqueio de participantes inadimplentes;
+* responsável pela conferência dos pagamentos.
+
+---
+
+## 4.10 Reservas dos estúdios
+
+As reservas dos estúdios são realizadas por:
+
+* WhatsApp;
+* telefone;
+* contato direto com o administrador do estúdio.
+
+### Problemas identificados
+
+* centralização em uma pessoa;
+* dificuldade para responder rapidamente;
+* risco de conflito de horários;
+* ausência de confirmação automática;
+* falta de histórico estruturado;
+* dificuldade para acompanhar pagamentos;
+* dificuldade para administrar reservas recorrentes.
+
+---
+
+## 4.11 Day use
+
+O day use acontece aos domingos.
+
+No sábado, uma lista é publicada no grupo de WhatsApp chamado “Domingueira”.
+
+Os interessados adicionam seus nomes em uma pré-lista.
+
+No domingo, os participantes comparecem e fazem revezamento nas quadras.
+
+### Problemas identificados
+
+* lista informal;
+* ausência de limite automatizado;
+* dificuldade para prever quantidade de participantes;
+* ausência de pagamento antecipado;
+* falta de controle de presença;
+* dificuldade para organizar o revezamento;
+* ausência de histórico de participação.
+
+### Solução proposta
+
+O módulo de day use deverá permitir:
+
+* criar evento;
+* definir data;
+* definir valor;
+* definir limite de vagas;
+* abrir e fechar inscrições;
+* registrar participantes;
+* registrar pagamento;
+* gerar lista de presença;
+* organizar fila ou revezamento;
+* controlar desistências;
+* criar lista de espera.
+
+---
+
+## 4.12 Registro de vendas
+
+As vendas são registradas manualmente em uma caderneta.
+
+### Problemas identificados
+
+* falta de controle de estoque;
+* dificuldade para verificar vendas;
+* ausência de histórico por cliente;
+* dificuldade para identificar produtos mais vendidos;
+* falta de fechamento de caixa estruturado;
+* risco de perda ou erro de anotação.
+
+---
+
+## 4.13 Encordoamento de raquetes
+
+O cliente solicita o serviço e informa:
+
+* tipo de corda;
+* libragem desejada.
+
+A raquete é deixada na academia.
+
+Um profissional responsável realiza o serviço, informa o valor e o prazo de entrega.
+
+Também é mantido um histórico com:
+
+* último encordoamento;
+* corda utilizada;
+* libragem escolhida.
+
+### Necessidades identificadas
+
+O sistema deverá registrar:
+
+* cliente;
+* raquete;
+* marca;
+* modelo;
+* número de identificação;
+* corda escolhida;
+* origem da corda;
+* tensão ou libragem;
+* data de entrada;
+* prazo previsto;
+* profissional responsável;
+* valor do serviço;
+* status;
+* data de conclusão;
+* data de retirada;
+* forma de pagamento;
+* observações;
+* histórico completo por raquete.
+
+Status sugeridos:
+
+* recebida;
+* aguardando orçamento;
+* aguardando aprovação;
+* em fila;
+* em execução;
+* concluída;
+* aguardando retirada;
+* entregue;
+* cancelada.
+
+---
+
+# 5. Principais problemas declarados pela empresa
+
+## 5.1 Responder mensagens com eficiência
+
+A operação depende fortemente do WhatsApp.
+
+As mensagens envolvem:
+
+* reservas;
+* cancelamentos;
+* disponibilidade;
+* ranking;
+* estúdio;
+* day use;
+* aulas;
+* reposições;
+* pagamentos;
+* encordoamento.
+
+A grande quantidade de conversas aumenta o tempo de resposta e o risco de esquecimento.
+
+---
+
+## 5.2 Marcar os confrontos do ranking com eficácia
+
+Embora os confrontos sejam sorteados pelo LetzPlay, o processo de encontrar horário, reservar quadra e confirmar os dois jogadores é manual.
+
+Esse processo deverá ser uma das prioridades do MVP.
+
+---
+
+## 5.3 Administração geral
+
+A operação está distribuída entre:
+
+* cadernos;
+* cadernetas;
+* grupos de WhatsApp;
+* telefone;
+* funcionários;
+* diretoria;
+* secretaria;
+* LetzPlay.
+
+Não existe uma base central que permita acompanhar toda a empresa.
+
+---
+
+# 6. Objetivo principal do JHS Arena
+
+Centralizar a administração da empresa em uma única plataforma.
+
+O sistema deverá fornecer:
+
+* agenda unificada;
+* gestão de clientes;
+* gestão de professores;
+* gestão de espaços;
+* gestão de ranking;
+* gestão de aulas;
+* gestão de estúdios;
+* gestão de day use;
+* gestão de vendas;
+* gestão de encordoamentos;
+* gestão de pagamentos;
+* relatórios;
+* notificações.
+
+---
+
+# 7. Prioridades do MVP
+
+Com base nas dores declaradas, o MVP deverá priorizar:
+
+## Prioridade 1 — Agenda central
+
+Substituir o caderno de reservas por uma agenda digital compartilhada.
+
+## Prioridade 2 — Ranking
+
+Organizar disponibilidades, confirmações, cancelamentos e confrontos.
+
+## Prioridade 3 — Atendimento
+
+Reduzir a quantidade de mensagens manuais e padronizar notificações.
+
+## Prioridade 4 — Professores e aulas
+
+Controlar horários fixos, faltas e reposições.
+
+## Prioridade 5 — Administração básica
+
+Fornecer dashboard, histórico e controle inicial de pagamentos.
+
+---
+
+# 8. Escopo recomendado para a primeira versão
+
+A primeira versão deverá incluir:
+
+1. Login e controle de usuários;
+2. Cadastro da empresa;
+3. Cadastro de funcionários;
+4. Cadastro de clientes;
+5. Cadastro de professores;
+6. Cadastro de quadras;
+7. Cadastro de estúdios;
+8. Cadastro de serviços e preços;
+9. Agenda diária, semanal e mensal;
+10. Criação de reservas;
+11. Alteração de reservas;
+12. Cancelamento de reservas;
+13. Registro de pagamentos;
+14. Agenda dos professores;
+15. Cadastro de alunos;
+16. Controle de aulas;
+17. Faltas;
+18. Reposições;
+19. Cadastro de participantes do ranking;
+20. Cadastro de categorias;
+21. Registro de disponibilidade;
+22. Sugestão de confrontos;
+23. Confirmação dos jogadores;
+24. Aviso de cancelamento;
+25. Dashboard operacional;
+26. Histórico de ações.
+
+---
+
+# 9. Funcionalidades posteriores ao MVP
+
+Poderão ser desenvolvidas em fases seguintes:
+
+* day use completo;
+* loja;
+* estoque;
+* vendas;
+* caixa;
+* encordoamento;
+* financeiro avançado;
+* integração com PIX;
+* integração com WhatsApp;
+* ranking próprio;
+* aplicativo móvel;
+* modo offline;
+* inteligência de ocupação;
+* inteligência de formação de confrontos;
+* relatórios gerenciais avançados.
+
+---
+
+# 10. Requisitos não funcionais iniciais
+
+O sistema deverá:
+
+* funcionar em Windows;
+* funcionar em Linux;
+* utilizar uma única base de código;
+* possuir interface responsiva;
+* possuir controle de acesso;
+* registrar auditoria;
+* proteger os dados dos clientes;
+* realizar backup;
+* suportar múltiplas empresas;
+* suportar múltiplas unidades;
+* funcionar com conexão segura;
+* permitir expansão futura;
+* possuir banco de dados centralizado;
+* evitar reservas duplicadas;
+* manter integridade das informações.
+
+---
+
+# 11. Indicadores de sucesso do projeto piloto
+
+O projeto poderá ser considerado bem-sucedido quando conseguir:
+
+* eliminar o uso do caderno para reservas;
+* reduzir conflitos de horários;
+* diminuir o tempo de resposta no WhatsApp;
+* avisar automaticamente os envolvidos em cancelamentos;
+* reduzir o número de jogadores sem partidas;
+* centralizar agendas de quadras e professores;
+* facilitar a consulta de pagamentos;
+* fornecer ao proprietário uma visão diária da operação.

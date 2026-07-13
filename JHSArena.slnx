@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/JHSArena.Api/JHSArena.Api.csproj" />
+    <Project Path="src/JHSArena.Application/JHSArena.Application.csproj" />
+    <Project Path="src/JHSArena.Desktop/JHSArena.Desktop.csproj" />
+    <Project Path="src/JHSArena.Domain/JHSArena.Domain.csproj" />
+    <Project Path="src/JHSArena.Infrastructure/JHSArena.Infrastructure.csproj" />
+    <Project Path="src/JHSArena.Shared/JHSArena.Shared.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/JHSArena.IntegrationTests/JHSArena.IntegrationTests.csproj" />
+    <Project Path="tests/JHSArena.UnitTests/JHSArena.UnitTests.csproj" />
+  </Folder>
+</Solution>
